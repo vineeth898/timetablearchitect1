@@ -3,6 +3,7 @@
 #include<string>
 #include"configs.cpp"
 #include"teacher.cpp"
+#include"room.cpp"
 //dependencies
 
 using namespace std;
@@ -12,16 +13,16 @@ int main(){
     fstream teacherfile;
     teacherfile.open("teacher.csv");
     if(teacherfile.is_open()){
-        teacher list[250];
-        string input;
-        int i=0;
-        while(!teacherfile.eof()){
-            teacherfile>>input;
-            list[i].readData(input);
-            i++;
+        teacher first;
+        string s;
+        teacherfile>>s;
+        first.readData(s);
+        for(int i=0;i<days;i++){
+            for(int j=0;j<periods;j++){
+                cout<<first.timeTable[i][j]<<" ";
+            }
+            cout<<"\n";
         }
-        teacherfile<<list[i].convertString();
-        teacherfile>>input;
     }
     teacherfile.close(); 
     int a;
