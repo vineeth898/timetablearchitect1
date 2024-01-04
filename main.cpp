@@ -11,9 +11,9 @@ using namespace std;
 
 int main(){
     fstream teacherfile;
-    teacherfile.open("teacher.csv");
+    teacherfile.open("room.csv");
     if(teacherfile.is_open()){
-        teacher first;
+        room first;
         string s;
         teacherfile>>s;
         first.readData(s);
@@ -23,6 +23,7 @@ int main(){
             }
             cout<<"\n";
         }
+        cout<<endl<<first.convertToString();
     }
     teacherfile.close(); 
     int a;

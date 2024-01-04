@@ -13,6 +13,13 @@ class room{
         int timeTableName[days][periods];//what teacher is teaching when occupied. changes done by program, not taken from user.
         bool readData(string inp);
         string convertToString();
+        room(){
+            for(int i=0;i<days;i++){
+                for(int j=0;j<periods;j++){
+                    timeTableName[i][j]=0;
+                }
+            }
+        }//initialise all classes to zero.
 };
 bool room::readData(string inp){
     enum format{
@@ -67,4 +74,14 @@ bool room::readData(string inp){
     }
     a:
     return 1;
+}
+string room::convertToString(){
+    string output;
+    output+=name+","+to_string(capacity)+","+to_string(labOrNot)+","+building;
+    for(int i=0;i<days;i++){
+        for(int j=0;j<days;j++){
+            output+=","+to_string(timeTable[i][j])+","+to_string(timeTableName[i][j]);
+        }
+    }
+    return output;
 }
