@@ -1,4 +1,3 @@
-
 #include<string>
 #include"configs.cpp"
 //includes
@@ -8,9 +7,9 @@ class teacher{
     public:
         string name;//name of teacher
         string branch;//branch of teacher
-        int workHours=0; //how many hours the teacher would work
+        unsigned int workHours=0; //how many hours the teacher would work
         bool timeTable[days][periods];//when teacher is free. 1 for free 0 for occupiued.
-        int timeTableName[days][periods];//what teacher is teaching when occupied. changes done by program, not taken from user.
+        unsigned int timeTableName[days][periods];//what teacher is teaching when occupied. changes done by program, not taken from user.
         bool readData(string inp);//function which converts string input from teacherdata to the objects data
         string convertToString();//reverse of above
         teacher(){

@@ -1,0 +1,116 @@
+#include<string>
+#include"configs.cpp"
+
+using namespace std;
+
+class subject{
+    public:
+        string name;
+        string elective;
+        int lab;
+         int credits,hourspercredit;
+        unsigned short int bfactor;
+        unsigned int *rooms;
+        unsigned short int noRooms;
+        bool readData(string inp);
+        string convertToString();
+        subject(){
+            credits=0;
+            hourspercredit=0;
+            bfactor=0;
+        };
+
+};
+bool subject::readData(string inp){
+    enum format{
+        namen,
+        electiven,
+        labn,
+        creditsn,
+        hourspercreditn,
+        bfactorn,
+        roomsn,
+    };
+    int commacount=0;
+    // try{
+        for(int i=0;i<inp.size();i++){
+            if(inp[i]==','){
+                commacount++;
+                continue;
+            }
+            switch(commacount){
+                case namen:
+                    name.push_back(inp[i]);
+                    break;
+                case electiven:
+                    elective.push_back(inp[i]);
+                    break;
+                case labn:
+                    lab=inp[i]-'0';
+                    break;
+                case creditsn:
+                    credits=credits*10+inp[i]-'0';
+                    break;
+                case hourspercreditn:
+                    hourspercredit=hourspercredit*10+inp[i]-'0';
+                    break;
+                case bfactorn:
+                    bfactor=bfactor*10+inp[i]-'0';
+                    break;
+                case roomsn:
+                    int commacount=0;
+                    i++;
+                    unsigned base=10;
+                    rooms=new unsigned[base];
+                    for(int j=0;j<base;j++){
+                        rooms[j]=0;
+                    }
+                    while(true){
+                        if(inp[i]==']'){
+                            noRooms=commacount+1;
+                            break;
+                        }
+                        else if(inp[i]==','){
+                            commacount++;
+                        }
+                        else{
+                            if(commacount<base){
+                                rooms[commacount]=rooms[commacount]*10+inp[i]-'0';
+                            }
+                            else{
+                                unsigned *temp=new unsigned[base];
+                                for(int j=0;j<base;j++){
+                                    temp[j]=rooms[j];
+                                }
+                                base*=2;
+                                delete []rooms;
+                                for(int j=0;j<base/2;j++){
+                                    rooms[j]=temp[j];
+                                }
+                                for(int j=base/2+1;j<base;j++){
+                                    rooms[j]=0;
+                                }
+                                delete []temp;
+                                rooms[commacount]=inp[i]-'0';
+                            }
+                        }
+                        i++;
+                    }
+
+            }
+        }
+    // }
+    // catch(...){
+        // return 0;
+    // }
+}
+string subject::convertToString(){
+    string out;
+    out=name+",";
+    out+=elective+",";
+    out+=to_string(lab)+",";
+    out+=to_string(credits)+",";
+    out+=to_string(hourspercredit)+",";
+    out+=to_string(bfactor)+",";
+    return out;
+}

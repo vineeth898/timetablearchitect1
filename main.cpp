@@ -4,6 +4,7 @@
 #include"configs.cpp"
 #include"teacher.cpp"
 #include"room.cpp"
+#include"subject.cpp"
 //dependencies
 
 using namespace std;
@@ -11,19 +12,22 @@ using namespace std;
 
 int main(){
     fstream teacherfile;
-    teacherfile.open("room.csv");
+    teacherfile.open("datastorage/subject.csv");
     if(teacherfile.is_open()){
-        room first;
+        subject first;
         string s;
         teacherfile>>s;
         first.readData(s);
-        for(int i=0;i<days;i++){
-            for(int j=0;j<periods;j++){
-                cout<<first.timeTable[i][j]<<" ";
-            }
-            cout<<"\n";
-        }
-        cout<<endl<<first.convertToString();
+        // cout<<"SUBNAME "<<first.name;
+        // cout<<"ELECTIVE "<<first.elective;
+        // cout<<"LAB "<<first.lab;
+        // cout<<"CREDITS "<<first.credits;
+        // cout<<"CREDITSPERHOUR "<<first.hourspercredit;
+        // cout<<"BOB "<<first.bfactor;
+         cout<<first.convertToString();
+        // for(int i=0;i<first.noRooms;i++){
+        //     cout<<first.rooms[i]<<endl;
+        // }
     }
     teacherfile.close(); 
     int a;

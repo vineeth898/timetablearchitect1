@@ -13,7 +13,8 @@ class room{
         int timeTableName[days][periods];//what teacher is teaching when occupied. changes done by program, not taken from user.
         bool readData(string inp);
         string convertToString();
-        room(){
+        room
+        (){
             for(int i=0;i<days;i++){
                 for(int j=0;j<periods;j++){
                     timeTableName[i][j]=0;
