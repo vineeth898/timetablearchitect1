@@ -93,7 +93,7 @@ void section::makeTIMETABLE(){
         if(coreSubjects[i].hoursPerCredit==1){
             for(int j=0;j<days;j++){
                 for(int k=0;k<periods;k++){
-                    if(coreTeachers[i].timeTable[j][k]){
+                    if(!coreTeachers[i].timeTable[j][k]){
                         if(timeTable[j][k]=="f"){
                             creditsl++;
                         }
@@ -138,14 +138,68 @@ void section::makeTIMETABLE(){
                 }
             } 
         }
+        else if(coreSubjects[i].hoursPerCredit==2){
+            for(int j=0;j<days;j++){
+                for(int k=0;k<periods;k+=2){
+                    if(!coreTeachers[i].timeTable[j][k] && !coreTeachers[i].timeTable[j][k+1]){
+                        if(timeTable[j][k]=="f"){
+                            creditsl++;
+                        }
+                    }
+                    if(creditsl>=coreSubjects[i].credits){
+                        collision=false;
+                    }
+                }
+            }
+            if(!collision){
+                vector<int> weights;
+                int numberclasses=coreSubjects[i].credits;
+                cout<<"credits: "<<numberclasses;
+                int dayfactor[days]={0};
+                for(int j=0;j<days;j++){
+                    for(int k=0;k<periods;k+=2){
+                        if(!coreTeachers[i].timeTable[j][k] && !coreTeachers[i].timeTable[j][k+1]){
+                            if(timeTable[j][k]=="f"){
+                                weights.push_back(weight(dayfactor[j],k,coreSubjects[i].bFactor));
+                            }
+                        }
+                    }
+                }
+                sort(weights.begin(),weights.end());
+                for(int j=0;j<days;j++){
+                    for(int k=0;k<periods;k+=2){
+                        if(!coreTeachers[i].timeTable[j][k] && !coreTeachers[i].timeTable[j][k+1]){
+                            if(timeTable[j][k]=="f"){
+                                for(int a=0;a<coreSubjects[i].credits;a++){
+                                    if(weight(dayfactor[j],k,coreSubjects[i].bFactor)==weights[a] && numberclasses){
+                                        numberclasses--;
+                                        dayfactor[j]+=coreSubjects[i].bFactor*5;
+                                        timeTable[j][k]=coreSubjects[i].name;
+                                        teacherTable[j][k]=coreTeachers[i].name;
+                                        coreTeachers[i].timeTable[j][k]=1;
+                                        coreTeachers[i].timeTableName[j][k]=name;
+                                        timeTable[j][k+1]=coreSubjects[i].name;
+                                        teacherTable[j][k+1]=coreTeachers[i].name;
+                                        coreTeachers[i].timeTable[j][k+1]=1;
+                                        coreTeachers[i].timeTableName[j][k+1]=name;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } 
+        }
     }
 }
 
 int main(){
     teacher T1;
     teacher T2;
+    teacher sudeep;
     subject S1;
-    subject S2;
+    subject S2,caeg;
     room R1;
     fstream src;
     string input;
@@ -154,12 +208,16 @@ int main(){
     T1.readData(input);
     src>>input;
     T2.readData(input);
+    src>>input;
+    sudeep.readData(input);
     src.close();
     src.open("datastorage/subject.csv");
     src>>input;
     S1.readData(input);
     src>>input;
     S2.readData(input);
+    src>>input;
+    caeg.readData(input);
     src.close();
     src.open("datastorage/room.csv");
     src>>input;
@@ -168,8 +226,10 @@ int main(){
     section s;
     s.addCore(T2,S2);
     s.addCore(T1,S1);
+    s.addCore(sudeep,caeg);
     s.makeTIMETABLE();
     s.displayTimeTable();
+    s.displayTeacherTable();
     return 0;
 }
 
