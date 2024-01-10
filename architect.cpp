@@ -70,6 +70,7 @@ void section::addCore(teacher Teacher,subject Subject){
     coreTeachers.push_back(Teacher);
     coreSubjects.push_back(Subject);
 }
+
 void section::addLab(teacher Teacher[],int noteachers,subject Subject){
     vector<teacher> a;
     for(int i=0;i<noteachers;i++){
@@ -89,23 +90,23 @@ void section::makeTIMETABLE(){
     bool collision=true;
     for(int i=0;i<coreTeachers.size();i++){
         creditsl=coreSubjects[i].credits;
-        for(int j=0;j<days;j++){
-            for(int k=0;k<periods;k++){
-                if(coreTeachers[i].timeTable[j][k]){
-                    if(timeTable[j][k]=="f"){
-                        creditsl++;
+        if(coreSubjects[i].hoursPerCredit==1){
+            for(int j=0;j<days;j++){
+                for(int k=0;k<periods;k++){
+                    if(coreTeachers[i].timeTable[j][k]){
+                        if(timeTable[j][k]=="f"){
+                            creditsl++;
+                        }
+                    }
+                    if(creditsl>=coreSubjects[i].credits){
+                        collision=false;
                     }
                 }
-                if(creditsl>=coreSubjects[i].credits){
-                    collision=false;
-                }
             }
-        }
-        if(!collision){
-            vector<int> weights;
-            int numberclasses=coreSubjects[i].credits;
-            int dayfactor[days]={0};
-            if(coreSubjects[i].hoursPerCredit==1){
+            if(!collision){
+                vector<int> weights;
+                int numberclasses=coreSubjects[i].credits;
+                int dayfactor[days]={0};
                 for(int j=0;j<days;j++){
                     for(int k=0;k<periods;k++){
                         if(!coreTeachers[i].timeTable[j][k]){
@@ -135,11 +136,10 @@ void section::makeTIMETABLE(){
                         }
                     }
                 }
-            }
+            } 
         }
     }
 }
-
 
 int main(){
     teacher T1;
