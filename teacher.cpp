@@ -7,11 +7,12 @@ class teacher{
     public:
         string name;//name of teacher
         string branch;//branch of teacher
-        unsigned int workHours=0; //how many hours the teacher would work
+        //unsigned int workHours=0; //how many hours the teacher would work
         bool timeTable[days][periods];//when teacher is free. 1 for free 0 for occupiued.
         unsigned int timeTableName[days][periods];//what teacher is teaching when occupied. changes done by program, not taken from user.
         bool readData(string inp);//function which converts string input from teacherdata to the objects data
         string convertToString();//reverse of above
+        void showTimeTable();
         teacher(){
             for(int i=0;i<days;i++){
                 for(int j=0;j<periods;j++){
@@ -24,7 +25,7 @@ bool teacher::readData(string inp){
     enum format{
         namen,
         branchn,
-        workHoursn,
+        //workHoursn,
         timeTablen
     };//Used for switch statements. each field corresponds to its location in the string
     int commacount=0;//numebr of commas encountered
@@ -41,9 +42,10 @@ bool teacher::readData(string inp){
                 case branchn:
                     branch.push_back(inp[i]);
                     break;//read branch
-                case workHoursn:
+                /*case workHoursn:
                     workHours=workHours*10+inp[i]-'0';
                     break;//read workhours
+                    */
                 case timeTablen:
                     commacount=0;
                     int strptr=i;
@@ -75,12 +77,20 @@ string teacher::convertToString(){
     output=name;
     output.push_back(',');
     output+=branch;
-    output.push_back(',');
-    output+=to_string(workHours);
+    //output.push_back(',');
+    //output+=to_string(workHours);
     for(int i=0;i<days;i++){
         for(int j=0;j<days;j++){
             output+=","+to_string(timeTable[i][j])+","+to_string(timeTableName[i][j]);
         }
     }
     return output;
+}
+void teacher::showTimeTable(){
+    for(int i=0;i<days;i++){
+        for(int j=0;j<periods;j++){
+            cout<<timeTable[i][j]<<"      ";
+        }
+        cout<<endl;
+    }
 }

@@ -71,7 +71,7 @@ bool subject::readData(string inp){
                             break;
                         }
                         else if(inp[i]==','){
-                            commacount++;
+                            commacount++;   
                         }
                         else{
                             if(commacount<base){

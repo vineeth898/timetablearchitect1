@@ -8,16 +8,16 @@ class subject{
         string name;
         string elective;
         int lab;
-         int credits,hourspercredit;
-        unsigned short int bfactor;
+         int credits,hoursPerCredit;
+        unsigned short int bFactor;
         unsigned int *rooms;
         unsigned short int noRooms;
         bool readData(string inp);
         string convertToString();
         subject(){
             credits=0;
-            hourspercredit=0;
-            bfactor=0;
+            hoursPerCredit=0;
+            bFactor=0;
         };
 
 };
@@ -27,18 +27,18 @@ bool subject::readData(string inp){
         electiven,
         labn,
         creditsn,
-        hourspercreditn,
-        bfactorn,
+        hoursPerCreditn,
+        bFactorn,
         roomsn,
     };
-    int commacount=0;
-    // try{
+    int commaCount=0;
+    try{
         for(int i=0;i<inp.size();i++){
             if(inp[i]==','){
-                commacount++;
+                commaCount++;
                 continue;
             }
-            switch(commacount){
+            switch(commaCount){
                 case namen:
                     name.push_back(inp[i]);
                     break;
@@ -51,31 +51,31 @@ bool subject::readData(string inp){
                 case creditsn:
                     credits=credits*10+inp[i]-'0';
                     break;
-                case hourspercreditn:
-                    hourspercredit=hourspercredit*10+inp[i]-'0';
+                case hoursPerCreditn:
+                    hoursPerCredit=hoursPerCredit*10+inp[i]-'0';
                     break;
-                case bfactorn:
-                    bfactor=bfactor*10+inp[i]-'0';
+                case bFactorn:
+                    bFactor=bFactor*10+inp[i]-'0';
                     break;
                 case roomsn:
-                    int commacount=0;
+                    int commaCount=0;
                     i++;
                     vector<unsigned> temp;
                     while(true){
                         if(inp[i]==']'){
-                            noRooms=commacount+1;
+                            noRooms=commaCount+1;
                              rooms=new unsigned[noRooms];
-                             for(commacount;commacount>=0;commacount--){
-                                 rooms[commacount]=temp[commacount];
+                             for(commaCount;commaCount>=0;commaCount--){
+                                 rooms[commaCount]=temp[commaCount];
                              }
                             break;
                         }
                         else if(inp[i]==','){
-                            commacount++;
+                            commaCount++;
                         }
                         else{
-                            if(temp.size()>commacount){
-                                temp[commacount]=temp[commacount]*10+inp[i]-'0';
+                            if(temp.size()>commaCount){
+                                temp[commaCount]=temp[commaCount]*10+inp[i]-'0';
                             }
                            else{
                             temp.push_back(inp[i]-'0');
@@ -86,10 +86,10 @@ bool subject::readData(string inp){
 
             }
         }
-    // }
-    // catch(...){
-        // return 0;
-    // }
+     }
+     catch(...){
+         return 0;
+     }
 }
 string subject::convertToString(){
     string out;
@@ -97,8 +97,8 @@ string subject::convertToString(){
     out+=elective+",";
     out+=to_string(lab)+",";
     out+=to_string(credits)+",";
-    out+=to_string(hourspercredit)+",";
-    out+=to_string(bfactor)+",[";
+    out+=to_string(hoursPerCredit)+",";
+    out+=to_string(bFactor)+",[";
     for(int i=0;i<noRooms-1;i++){
         out+=to_string(rooms[i])+",";
     }
