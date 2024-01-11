@@ -10,7 +10,7 @@ using namespace std;
 
 int main(){
     fstream teacherfile;
-    teacherfile.open("datastorage/teacher.csv");
+    teacherfile.open("datastorage/subject.csv");
     string s;
     teacherfile>>s;
     teacher t;

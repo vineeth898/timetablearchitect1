@@ -1,0 +1,4 @@
+timetable:mon1,mon2,mon3,mon4.....
+teacher: Name,branch,timetable
+subject: name, electivenamefelectiveelse0,labornot,credits,hourspercredit,bfactor,[room list](keep[0] if no room specified)
+room:name, capacity,labornot,branch,timetable

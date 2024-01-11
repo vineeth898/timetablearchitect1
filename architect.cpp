@@ -19,17 +19,28 @@ class section{
         int name;
         vector<teacher> coreTeachers;
         vector<subject> coreSubjects;
+        void addCore(teacher Teacher,subject Subject);
+
+
         //vector<vector<teacher>> electiveTeachers;
         //vector<subject> electiveSubjects;
+
+
         vector<vector<teacher>> labTeachers;
         vector<subject> labSubjects;
+        vector<int> noOfLabs;
+        void addLab(teacher Teacher[],int noteachers,subject Subject,int nolabs);
+
+
+        vector<room> defaultRooms;
         string timeTable[days][periods];
         string teacherTable[days][periods];
+        int roomTable[days][periods];
+
+
         void displayTimeTable();
-        void displayTeacherTable(); 
-        void addCore(teacher Teacher,subject Subject);
+        void displayTeacherTable();
         //void addElective(teacher Teacher[],int numberOfTeachers,subject Subject);
-        void addLab(teacher Teacher[],int noteachers,subject Subject);
         void block(int a,int b,string subject, string teacher);
         void makeTIMETABLE();
         section(){
@@ -71,13 +82,14 @@ void section::addCore(teacher Teacher,subject Subject){
     coreSubjects.push_back(Subject);
 }
 
-void section::addLab(teacher Teacher[],int noteachers,subject Subject){
+void section::addLab(teacher Teacher[],int noteachers,subject Subject,int nolabs){
     vector<teacher> a;
     for(int i=0;i<noteachers;i++){
         a.push_back(Teacher[i]);
     }
     labTeachers.push_back(a);
     labSubjects.push_back(Subject);
+    noOfLabs.push_back(nolabs);
 }
 
 void section::block(int i,int j,string Teacher, string Subject){
@@ -88,6 +100,11 @@ void section::block(int i,int j,string Teacher, string Subject){
 void section::makeTIMETABLE(){
     int creditsl;
     bool collision=true;
+    for(int i=0;i<labSubjects.size();i++){
+        cout<<"Number of labs to be reserved: "<<noOfLabs[i]<<endl;
+        cout<<"number of labs alloted to this particular subject is: "<<labSubjects[i].noRooms;
+    }
+    //alloting commin subjects
     for(int i=0;i<coreTeachers.size();i++){
         creditsl=coreSubjects[i].credits;
         if(coreSubjects[i].hoursPerCredit==1){
@@ -100,6 +117,7 @@ void section::makeTIMETABLE(){
                     }
                     if(creditsl>=coreSubjects[i].credits){
                         collision=false;
+                        break;
                     }
                 }
             }
@@ -148,6 +166,7 @@ void section::makeTIMETABLE(){
                     }
                     if(creditsl>=coreSubjects[i].credits){
                         collision=false;
+                        break;
                     }
                 }
             }
@@ -195,41 +214,4 @@ void section::makeTIMETABLE(){
 }
 
 int main(){
-    teacher T1;
-    teacher T2;
-    teacher sudeep;
-    subject S1;
-    subject S2,caeg;
-    room R1;
-    fstream src;
-    string input;
-    src.open("datastorage/teacher.csv");
-    src>>input;
-    T1.readData(input);
-    src>>input;
-    T2.readData(input);
-    src>>input;
-    sudeep.readData(input);
-    src.close();
-    src.open("datastorage/subject.csv");
-    src>>input;
-    S1.readData(input);
-    src>>input;
-    S2.readData(input);
-    src>>input;
-    caeg.readData(input);
-    src.close();
-    src.open("datastorage/room.csv");
-    src>>input;
-    R1.readData(input);
-    src.close();
-    section s;
-    s.addCore(T2,S2);
-    s.addCore(T1,S1);
-    s.addCore(sudeep,caeg);
-    s.makeTIMETABLE();
-    s.displayTimeTable();
-    s.displayTeacherTable();
-    return 0;
 }
-
