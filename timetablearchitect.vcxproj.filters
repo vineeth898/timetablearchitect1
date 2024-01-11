@@ -21,12 +21,30 @@
     <ClCompile Include="dept.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mainpage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="name.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="addname.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyForm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="dept.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mainpage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="name.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="addname.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

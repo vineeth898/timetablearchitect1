@@ -126,23 +126,44 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="addname.cpp" />
     <ClCompile Include="dept.cpp" />
+    <ClCompile Include="mainpage.cpp" />
     <ClCompile Include="MyForm.cpp" />
+    <ClCompile Include="name.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="addname.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="dept.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="mainpage.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="MyForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="name.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="addname.resx">
+      <DependentUpon>addname.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="dept.resx">
       <DependentUpon>dept.h</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="mainpage.resx">
+      <DependentUpon>mainpage.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MyForm.resx">
       <DependentUpon>MyForm.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="name.resx">
+      <DependentUpon>name.h</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
