@@ -12,6 +12,7 @@ class room{
         bool timeTable[days][periods];//when room is free. 0 for free 1 for occupiued.
         int timeTableName[days][periods];//what class the rooms is holding. changes done by program, not taken from user.
         bool readData(string inp);
+        void showTimeTable();
         string convertToString();
         room(){
             for(int i=0;i<days;i++){
@@ -21,6 +22,14 @@ class room{
             }
         }//initialise all classes to zero.
 };
+void room::showTimeTable(){
+    for(int i=0;i<days;i++){
+        for(int j=0;j<periods;j++){
+            cout<<timeTable[i][j]<<" , ";
+        }
+        cout<<endl;
+    }
+}
 bool room::readData(string inp){
     enum format{
         namen,

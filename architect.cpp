@@ -39,6 +39,7 @@ class section{
 
         void displayTimeTable();
         void displayTeacherTable();
+        void displayClassTable();
         //void addElective(teacher Teacher[],int numberOfTeachers,subject Subject);
         void block(int a,int b,string subject, string teacher);
         void makeTIMETABLE();
@@ -47,6 +48,7 @@ class section{
                 for(int j=0;j<periods;j++){
                     timeTable[i][j]="f";
                     teacherTable[i][j]="f";
+                    roomTable[i][j]="NA";
                 }
             }
         }
@@ -60,13 +62,11 @@ class section{
                     return allRooms[i];
                 }
             }
-            cout<<"please enter all rooms";
             return allRooms[allRooms.size()];//fix and make program throw error saying room not there
         }
 };
 
 void section::displayTimeTable(){
-    cout<<"timeTable of class "<<name<<endl;
     for(int i=0;i<days;i++){
         for(int j=0;j<periods;j++){
             cout<<timeTable[i][j]<<"      ";
@@ -76,10 +76,18 @@ void section::displayTimeTable(){
 }
 
 void section::displayTeacherTable(){
-    cout<<"timeTable of class "<<name<<endl;
     for(int i=0;i<days;i++){
         for(int j=0;j<periods;j++){
             cout<<teacherTable[i][j]<<"      ";
+        }
+        cout<<endl;
+    }
+}
+
+void section::displayClassTable(){
+    for(int i=0;i<days;i++){
+        for(int j=0;j<periods;j++){
+            cout<<roomTable[i][j]<<"      ";
         }
         cout<<endl;
     }
@@ -116,20 +124,15 @@ void section::makeTIMETABLE(){
         int intersections;
         for(int j=0;j<labSubjects[i].noRooms;j++){
             for(int k=j+1;k<labSubjects[i].noRooms;k++){
+                intersections=0;
                 room curRoomA=returnRoom(labSubjects[i].rooms[j]);
                 room curRoomB=returnRoom(labSubjects[i].rooms[k]);
-                intersections=0;
-                cout<<"\ntime table of "<<curRoomA.name<<" and "<<curRoomB.name<<endl;
                 for(int a=0;a<days;a++){
                     for(int b=0;b<periods;b+=2){
-                        cout<<curRoomA.timeTable[a][b]<<curRoomB.timeTable[a][b]<<" , "<<curRoomA.timeTable[a][b+1]<<curRoomB.timeTable[a][b+1];
                         if(!curRoomA.timeTable[a][b] && !curRoomA.timeTable[a][b+1] && !curRoomB.timeTable[a][b] && !curRoomB.timeTable[a][b+1] && timeTable[a][b]=="f" && timeTable[a][b+1]=="f"){
                             intersections++;
-                            cout<<"!";
                         }
-                        cout<<" , ";
                     }
-                    cout<<endl;
                 }
                 if(intersections>=labSubjects[i].credits){
                     vector<room> selection={curRoomA,curRoomB};
@@ -138,10 +141,6 @@ void section::makeTIMETABLE(){
                 }
             }
         }
-        for(int j=0;j<candidates.size();j++){
-            cout<<"\n "<<j+1<<": "<<candidates[j][0].name<<" "<<candidates[j][1].name;
-            cout<<"  number of intersections: "<<intersectionCount[j];
-        }
         int highest=0,highestindex=0;
         for(int j=0;j<candidates.size();j++){
             if(intersectionCount[j]>highest){
@@ -149,7 +148,6 @@ void section::makeTIMETABLE(){
                 highest=intersectionCount[j];
             }
         }
-        cout<<"\n\n chosen candidate: "<<candidates[highestindex][0].name<<" and "<<candidates[highestindex][1].name<<endl;
         room curRoomA=candidates[highestindex][0];
         room curRoomB=candidates[highestindex][1];
         bool intersectionTimes[days][periods]={};
@@ -158,13 +156,6 @@ void section::makeTIMETABLE(){
                 intersectionTimes[a][b]=!curRoomA.timeTable[a][b] && !curRoomA.timeTable[a][b+1] && !curRoomB.timeTable[a][b] && !curRoomB.timeTable[a][b+1];
                 intersectionTimes[a][b+1]=!curRoomA.timeTable[a][b] && !curRoomA.timeTable[a][b+1] && !curRoomB.timeTable[a][b] && !curRoomB.timeTable[a][b+1];
             }
-        }
-        cout<<"\nIntersection time table: \n";
-        for(int a=0;a<days;a++){
-            for(int b=0;b<periods;b++){
-                cout<<intersectionTimes[a][b]<<", ";
-            }
-            cout<<endl;
         }
         int creditsForLab;
         vector<teacher> teacherListForLab=labTeachers[i];
@@ -207,7 +198,6 @@ void section::makeTIMETABLE(){
             }
         }
         creditsForLab=labSubjects[i].credits;
-        cout<<"\n\n InterSection Table: \n";
         for(int k=0;k<days;k++){
             for(int l=0;l<periods;l++){
                 if(intersectionTable[k][l]){
@@ -225,10 +215,8 @@ void section::makeTIMETABLE(){
                     if(intersectionTable[k][l] && creditsForLab){
                         timeTable[k][l]=labSubjects[i].name;
                         timeTable[k][l+1]=labSubjects[i].name;
-                        cout<<"\nTimetable set to "<<k<<l<<labSubjects[i].name;
                         teacherTable[k][l]=selectedTeachers[0].name+" , "+selectedTeachers[1].name+" , "+selectedTeachers[2].name+" , "+selectedTeachers[3].name;
                         teacherTable[k][l+1]=selectedTeachers[0].name+" , "+selectedTeachers[1].name+" , "+selectedTeachers[2].name+" , "+selectedTeachers[3].name;
-                        cout<<"\nteacherTable set to"<<k<<l<<selectedTeachers[0].name+" , "+selectedTeachers[1].name+selectedTeachers[2].name+" , "+selectedTeachers[3].name;
                         roomTable[k][l]=candidates[highestindex][0].name+" , "+candidates[highestindex][1].name;
                         roomTable[k][l+1]=candidates[highestindex][0].name+" , "+candidates[highestindex][1].name;
                         creditsForLab--;
@@ -240,12 +228,33 @@ void section::makeTIMETABLE(){
         else{
             cout<<"bob";
         }
-        //intersection found successfully. Next steps:  direct teacher assignement.
     }
-    
-    //alloting commin subjects
+    //core subjects allocation
     for(int i=0;i<coreTeachers.size();i++){
         creditsl=coreSubjects[i].credits;
+        vector<room> defRooms;
+        room roomDefault;int highest=0;
+        for(int j=0;j<defaultRooms.size();j++){
+            defRooms.push_back(returnRoom(defaultRooms[j]));
+            int free=0;
+            for(int k=0;k<days;k++){
+                for(int l=0;l<periods;l++){
+                    if(!defRooms[j].timeTable[k][l]){
+                        free++;
+                    }
+                }
+            }
+            if(free>highest){
+                roomDefault=defRooms[j];
+            }
+        }
+        for(int j=0;j<days;j++){
+            for(int k=0;k<periods;k++){
+                cout<<roomDefault.timeTable[j][k]<<" , ";
+            }
+            cout<<endl;
+        }
+        
         if(coreSubjects[i].hoursPerCredit==1){
             for(int j=0;j<days;j++){
                 for(int k=0;k<periods;k++){
@@ -286,6 +295,26 @@ void section::makeTIMETABLE(){
                                         teacherTable[j][k]=coreTeachers[i].name;
                                         coreTeachers[i].timeTable[j][k]=1;
                                         coreTeachers[i].timeTableName[j][k]=name;
+                                        if(coreSubjects[i].rooms[0]=="0"){
+                                            if(!roomDefault.timeTable[j][k]){
+                                                roomDefault.timeTable[j][k]=1;
+                                                roomDefault.timeTableName[j][k]=name;
+                                                roomTable[j][k]=roomDefault.name;
+                                                cout<<endl<< roomDefault.name<<" "<<roomDefault.timeTable[j][k]<<" at "<<j<<"  "<<k<<" moving on";
+                                            }
+                                            else{
+                                                for(int s=0;s<defRooms.size();s++){
+                                                    if(!defRooms[s].timeTable[j][k]){
+                                                        defRooms[s].timeTable[j][k]=1;
+                                                        defRooms[s].timeTableName[j][k]=name;
+                                                        roomTable[j][k]=defRooms[s].name;
+                                                        goto a;
+                                                    }
+                                                }
+                                                roomTable[j][k]="?????";
+                                            }
+                                        }
+                                        a:
                                         break;
                                     }
                                 }
@@ -312,7 +341,6 @@ void section::makeTIMETABLE(){
             if(!collision){
                 vector<int> weights;
                 int numberclasses=coreSubjects[i].credits;
-                cout<<"credits: "<<numberclasses;
                 int dayfactor[days]={0};
                 for(int j=0;j<days;j++){
                     for(int k=0;k<periods;k+=2){
@@ -352,6 +380,30 @@ void section::makeTIMETABLE(){
     }
 }
 
+
+vector<vector<bool>> intersectElectives(vector<teacher> teacherList,int credits){
+    int intersectionCount[days][periods]={0};
+    vector<vector<bool>> returnVal(6,vector<bool>(6,false));
+    for(int i=0;i<teacherList.size();i++){
+        for(int j=0;j<days;j++){
+            for(int k=0;k<periods;k++){
+                if(!teacherList[i].timeTable[j][k]){
+                    intersectionCount[j][k]++;
+                }
+            }
+        }
+    }  
+    for(int j=0;j<days;j++){
+        for(int k=0;k<periods;k++){
+            if(intersectionCount[j][k]>credits){
+                 returnVal[j][k]=1;
+                 break;
+            }
+        }
+    } 
+    return returnVal;
+}
+
 int main(){
     fstream bob;
     bob.open("datastorage/room.csv");
@@ -371,6 +423,10 @@ int main(){
         cse.allRooms.push_back(c2);
         cse.allRooms.push_back(c3);
         cse.allRooms.push_back(c4);
+        cse.defaultRooms.push_back(c1.name);
+        cse.defaultRooms.push_back(c2.name);
+        cse.defaultRooms.push_back(c3.name);
+        cse.defaultRooms.push_back(c4.name);
     }
     else{
         cout<<"room opening failsed";
@@ -413,5 +469,6 @@ int main(){
         cse.makeTIMETABLE();
         cse.displayTimeTable();
         cse.displayTeacherTable();
+        cse.displayClassTable();
     }
 }

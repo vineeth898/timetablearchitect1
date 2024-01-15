@@ -278,6 +278,7 @@
             <li><code>addLab(teacher Teacher[], int noteachers, subject Subject, int noLabs) - void</code>: Adds lab information to the section, including lab teachers, lab subjects, and the number of labs required Second parameter is the number of teacher in the list of teachers given. Will be ommited in future.</li>
             <li><code>displayTimeTable() - void</code>: Displays the timetable for the section.</li>
             <li><code>displayTeacherTable() - void</code>: Displays the timetable for teachers in the section.</li>
+            <li><code>displayClassTable() - void</code>: Displays the Class table of the section.</li>
             <li><code>block(int day, int period, string subject, string teacher) - void</code>: Blocks a specific time slot in the timetable for a subject and teacher. Parameters <code>day</code> and <code>period</code> represent the day and period of the timetable, respectively.</li>
             <li><code>makeTIMETABLE() - void</code>: Generates the timetable for the section based on the provided information.</li>
             <li><code>[weight(int &dayfactor, int time, int bfactor) - int]</code>: Calculates a weight based on day factor, time, and bFactor.</li>
