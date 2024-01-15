@@ -19,7 +19,19 @@ class teacher{
                     timeTableName[i][j]=0;
                 }
             }
-        }//initialise all classes to zero.
+        }
+        //initialise all classes to zero.
+        
+        // teacher(const teacher &bob){
+        //     name=bob.name;
+        //     branch=bob.branch;
+        //     for(int i=0;i<days;i++){
+        //         for(int j=0;j<periods;j++){
+        //             timeTable[i][j]=bob.timeTable[i][j];
+        //             timeTableName[i][j]=bob.timeTableName[i][j];
+        //         }
+        //     }
+        // }
 };
 bool teacher::readData(string inp){
     enum format{

@@ -7,10 +7,10 @@ class subject{
     public:
         string name;
         string elective;
-        int lab;
-         int credits,hoursPerCredit;
+        bool lab;
+        int credits,hoursPerCredit;
         unsigned short int bFactor;
-        unsigned int *rooms;
+        string *rooms;
         unsigned short int noRooms;
         bool readData(string inp);
         string convertToString();
@@ -19,7 +19,6 @@ class subject{
             hoursPerCredit=0;
             bFactor=0;
         };
-
 };
 bool subject::readData(string inp){
     enum format{
@@ -60,11 +59,11 @@ bool subject::readData(string inp){
                 case roomsn:
                     int commaCount=0;
                     i++;
-                    vector<unsigned> temp;
+                    vector<string> temp;
                     while(true){
                         if(inp[i]==']'){
                             noRooms=commaCount+1;
-                             rooms=new unsigned[noRooms];
+                             rooms=new string[noRooms];
                              for(commaCount;commaCount>=0;commaCount--){
                                  rooms[commaCount]=temp[commaCount];
                              }
@@ -75,10 +74,11 @@ bool subject::readData(string inp){
                         }
                         else{
                             if(temp.size()>commaCount){
-                                temp[commaCount]=temp[commaCount]*10+inp[i]-'0';
+                                temp[commaCount].push_back(inp[i]);
                             }
                            else{
-                            temp.push_back(inp[i]-'0');
+                            temp.push_back("");
+                            temp[commaCount].push_back(inp[i]);
                            }
                         }
                         i++;
@@ -100,8 +100,8 @@ string subject::convertToString(){
     out+=to_string(hoursPerCredit)+",";
     out+=to_string(bFactor)+",[";
     for(int i=0;i<noRooms-1;i++){
-        out+=to_string(rooms[i])+",";
+        out+=rooms[i]+",";
     }
-    out+=to_string(rooms[noRooms-1])+"]";
+    out+=rooms[noRooms-1]+"]";
     return out;
 }

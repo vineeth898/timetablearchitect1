@@ -9,12 +9,11 @@ class room{
         int capacity=0;
         bool labOrNot=0;
         string building; 
-        bool timeTable[days][periods];//when teacher is free. 1 for free 0 for occupiued.
-        int timeTableName[days][periods];//what teacher is teaching when occupied. changes done by program, not taken from user.
+        bool timeTable[days][periods];//when room is free. 0 for free 1 for occupiued.
+        int timeTableName[days][periods];//what class the rooms is holding. changes done by program, not taken from user.
         bool readData(string inp);
         string convertToString();
-        room
-        (){
+        room(){
             for(int i=0;i<days;i++){
                 for(int j=0;j<periods;j++){
                     timeTableName[i][j]=0;
