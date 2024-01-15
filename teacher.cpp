@@ -1,17 +1,16 @@
 #include<string>
 #include"configs.cpp"
 //includes
-using namespace std;
 //namespace declaration
 class teacher{
     public:
-        string name;//name of teacher
-        string branch;//branch of teacher
+        std::string name;//name of teacher
+        std::string branch;//branch of teacher
         //unsigned int workHours=0; //how many hours the teacher would work
         bool timeTable[days][periods];//when teacher is free. 1 for free 0 for occupiued.
         unsigned int timeTableName[days][periods];//what teacher is teaching when occupied. changes done by program, not taken from user.
-        bool readData(string inp);//function which converts string input from teacherdata to the objects data
-        string convertToString();//reverse of above
+        bool readData(std::string inp);//function which converts std::string input from teacherdata to the objects data
+        std::string convertToString();//reverse of above
         void showTimeTable();
         teacher(){
             for(int i=0;i<days;i++){
@@ -33,13 +32,13 @@ class teacher{
         //     }
         // }
 };
-bool teacher::readData(string inp){
+bool teacher::readData(std::string inp){
     enum format{
         namen,
         branchn,
         //workHoursn,
         timeTablen
-    };//Used for switch statements. each field corresponds to its location in the string
+    };//Used for switch statements. each field corresponds to its location in the std::string
     int commacount=0;//numebr of commas encountered
     try{
         for(int i=0;i<inp.size();i++){
@@ -84,16 +83,16 @@ bool teacher::readData(string inp){
     a:
     return 1;
 }
-string teacher::convertToString(){
-    string output;
+std::string teacher::convertToString(){
+    std::string output;
     output=name;
     output.push_back(',');
     output+=branch;
     //output.push_back(',');
-    //output+=to_string(workHours);
+    //output+=std::to_string(workHours);
     for(int i=0;i<days;i++){
         for(int j=0;j<days;j++){
-            output+=","+to_string(timeTable[i][j])+","+to_string(timeTableName[i][j]);
+            output+=","+std::to_string(timeTable[i][j])+","+std::to_string(timeTableName[i][j]);
         }
     }
     return output;
@@ -101,8 +100,8 @@ string teacher::convertToString(){
 void teacher::showTimeTable(){
     for(int i=0;i<days;i++){
         for(int j=0;j<periods;j++){
-            cout<<timeTable[i][j]<<"      ";
+            std::cout<<timeTable[i][j]<<"      ";
         }
-        cout<<endl;
+        std::cout<<std::endl;
     }
 }

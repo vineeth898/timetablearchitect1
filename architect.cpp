@@ -6,7 +6,6 @@
 #include"room.cpp"
 #include"subject.cpp"
 #include<bits/stdc++.h>
-using namespace std;
 /*
 First step:
 Configure teachers and subjects
@@ -17,31 +16,31 @@ Configure teachers and subjects
 class section{
     public:
         int name;
-        vector<teacher> coreTeachers;
-        vector<subject> coreSubjects;
+        std::vector<teacher> coreTeachers;
+        std::vector<subject> coreSubjects;
         void addCore(teacher Teacher,subject Subject);
 
 
-        //vector<vector<teacher>> electiveTeachers;
-        //vector<subject> electiveSubjects;
+        //std::vector<std::vector<teacher>> electiveTeachers;
+        //std::vector<subject> electiveSubjects;
 
 
-        vector<vector<teacher>> labTeachers;
-        vector<subject> labSubjects;
-        vector<int> noOfLabs;
+        std::vector<std::vector<teacher>> labTeachers;
+        std::vector<subject> labSubjects;
+        std::vector<int> noOfLabs;
         void addLab(teacher Teacher[],int noteachers,subject Subject,int noLabs);
 
-        vector<room> allRooms;
-        vector<string> defaultRooms;
-        string timeTable[days][periods];
-        string teacherTable[days][periods];
-        string roomTable[days][periods];
+        std::vector<room> allRooms;
+        std::vector<std::string> defaultRooms;
+        std::string timeTable[days][periods];
+        std::string teacherTable[days][periods];
+        std::string roomTable[days][periods];
 
         void displayTimeTable();
         void displayTeacherTable();
         void displayClassTable();
         //void addElective(teacher Teacher[],int numberOfTeachers,subject Subject);
-        void block(int a,int b,string subject, string teacher);
+        void block(int a,int b,std::string subject, std::string teacher);
         void makeTIMETABLE();
         section(){
             for(int i=0;i<days;i++){
@@ -56,7 +55,7 @@ class section{
         int weight(int &dayfactor,int time,int bfactor){
             return (time*10+bfactor*5+dayfactor);
         }
-        room &returnRoom(string name){//edit actual room
+        room &returnRoom(std::string name){//edit actual room
             for(int i=0;i<allRooms.size();i++){
                 if(allRooms[i].name==name){
                     return allRooms[i];
@@ -69,27 +68,27 @@ class section{
 void section::displayTimeTable(){
     for(int i=0;i<days;i++){
         for(int j=0;j<periods;j++){
-            cout<<timeTable[i][j]<<"      ";
+            std::cout<<timeTable[i][j]<<"      ";
         }
-        cout<<endl;
+        std::cout<<std::endl;
     }
 }
 
 void section::displayTeacherTable(){
     for(int i=0;i<days;i++){
         for(int j=0;j<periods;j++){
-            cout<<teacherTable[i][j]<<"      ";
+            std::cout<<teacherTable[i][j]<<"      ";
         }
-        cout<<endl;
+        std::cout<<std::endl;
     }
 }
 
 void section::displayClassTable(){
     for(int i=0;i<days;i++){
         for(int j=0;j<periods;j++){
-            cout<<roomTable[i][j]<<"      ";
+            std::cout<<roomTable[i][j]<<"      ";
         }
-        cout<<endl;
+        std::cout<<std::endl;
     }
 }
 
@@ -99,7 +98,7 @@ void section::addCore(teacher Teacher,subject Subject){
 }
 
 void section::addLab(teacher Teacher[],int noteachers,subject Subject,int noLabs){
-    vector<teacher> a;
+    std::vector<teacher> a;
     for(int i=0;i<noteachers;i++){
         a.push_back(Teacher[i]);
     }
@@ -108,7 +107,7 @@ void section::addLab(teacher Teacher[],int noteachers,subject Subject,int noLabs
     noOfLabs.push_back(noLabs);
 }
 
-void section::block(int i,int j,string Teacher, string Subject){
+void section::block(int i,int j,std::string Teacher, std::string Subject){
     timeTable[i][j]=Teacher;
     teacherTable[i][j]=Subject;
 }
@@ -119,8 +118,8 @@ void section::makeTIMETABLE(){
     collision=true;
     //now for 2 hours per credit.
     for(int i=0;i<labSubjects.size();i++){
-        vector<vector<room>> candidates;
-        vector<int> intersectionCount;
+        std::vector<std::vector<room>> candidates;
+        std::vector<int> intersectionCount;
         int intersections;
         for(int j=0;j<labSubjects[i].noRooms;j++){
             for(int k=j+1;k<labSubjects[i].noRooms;k++){
@@ -135,7 +134,7 @@ void section::makeTIMETABLE(){
                     }
                 }
                 if(intersections>=labSubjects[i].credits){
-                    vector<room> selection={curRoomA,curRoomB};
+                    std::vector<room> selection={curRoomA,curRoomB};
                     candidates.push_back(selection);
                     intersectionCount.push_back(intersections);
                 }
@@ -158,9 +157,9 @@ void section::makeTIMETABLE(){
             }
         }
         int creditsForLab;
-        vector<teacher> teacherListForLab=labTeachers[i];
-        vector<vector<teacher>> comb;
-        vector<teacher> selectedTeachers;
+        std::vector<teacher> teacherListForLab=labTeachers[i];
+        std::vector<std::vector<teacher>> comb;
+        std::vector<teacher> selectedTeachers;
         int lowest=36;
         int intersectionTable[days][periods]={0};
         for (int a = 0; a < teacherListForLab.size() - 3; ++a) {
@@ -181,7 +180,7 @@ void section::makeTIMETABLE(){
                             }
                         }
                         if(creditsForLab<=0){
-                            vector<teacher> temp={teacherListForLab[a],teacherListForLab[j],teacherListForLab[m],teacherListForLab[n]};
+                            std::vector<teacher> temp={teacherListForLab[a],teacherListForLab[j],teacherListForLab[m],teacherListForLab[n]};
                             comb.push_back(temp);
                             if(lowest>labSubjects[i].credits-creditsForLab){
                                 lowest=labSubjects[i].credits-creditsForLab;
@@ -226,13 +225,13 @@ void section::makeTIMETABLE(){
             }
         }
         else{
-            cout<<"bob";
+            std::cout<<"bob";
         }
     }
     //core subjects allocation
     for(int i=0;i<coreTeachers.size();i++){
         creditsl=coreSubjects[i].credits;
-        vector<room> defRooms;
+        std::vector<room> defRooms;
         room roomDefault;int highest=0;
         for(int j=0;j<defaultRooms.size();j++){
             defRooms.push_back(returnRoom(defaultRooms[j]));
@@ -250,9 +249,9 @@ void section::makeTIMETABLE(){
         }
         for(int j=0;j<days;j++){
             for(int k=0;k<periods;k++){
-                cout<<roomDefault.timeTable[j][k]<<" , ";
+                std::cout<<roomDefault.timeTable[j][k]<<" , ";
             }
-            cout<<endl;
+            std::cout<<std::endl;
         }
         
         if(coreSubjects[i].hoursPerCredit==1){
@@ -270,7 +269,7 @@ void section::makeTIMETABLE(){
                 }
             }
             if(!collision){
-                vector<int> weights;
+                std::vector<int> weights;
                 int numberclasses=coreSubjects[i].credits;
                 int dayfactor[days]={0};
                 for(int j=0;j<days;j++){
@@ -300,7 +299,7 @@ void section::makeTIMETABLE(){
                                                 roomDefault.timeTable[j][k]=1;
                                                 roomDefault.timeTableName[j][k]=name;
                                                 roomTable[j][k]=roomDefault.name;
-                                                cout<<endl<< roomDefault.name<<" "<<roomDefault.timeTable[j][k]<<" at "<<j<<"  "<<k<<" moving on";
+                                                std::cout<<std::endl<< roomDefault.name<<" "<<roomDefault.timeTable[j][k]<<" at "<<j<<"  "<<k<<" moving on";
                                             }
                                             else{
                                                 for(int s=0;s<defRooms.size();s++){
@@ -339,7 +338,7 @@ void section::makeTIMETABLE(){
                 }
             }
             if(!collision){
-                vector<int> weights;
+                std::vector<int> weights;
                 int numberclasses=coreSubjects[i].credits;
                 int dayfactor[days]={0};
                 for(int j=0;j<days;j++){
@@ -381,9 +380,9 @@ void section::makeTIMETABLE(){
 }
 
 
-vector<vector<bool>> intersectElectives(vector<teacher> teacherList,int credits){
+std::vector<std::vector<bool>> intersectElectives(std::vector<teacher> teacherList,int credits){
     int intersectionCount[days][periods]={0};
-    vector<vector<bool>> returnVal(6,vector<bool>(6,false));
+    std::vector<std::vector<bool>> returnVal(6,std::vector<bool>(6,false));
     for(int i=0;i<teacherList.size();i++){
         for(int j=0;j<days;j++){
             for(int k=0;k<periods;k++){
@@ -405,9 +404,9 @@ vector<vector<bool>> intersectElectives(vector<teacher> teacherList,int credits)
 }
 
 int main(){
-    fstream bob;
+    std::fstream bob;
     bob.open("datastorage/room.csv");
-    string inp;
+    std::string inp;
     section cse;
     if(bob.is_open()){
         bob>>inp;
@@ -429,7 +428,7 @@ int main(){
         cse.defaultRooms.push_back(c4.name);
     }
     else{
-        cout<<"room opening failsed";
+        std::cout<<"room opening failsed";
     }
     bob.close();
     bob.open("datastorage/teacher.csv");
@@ -449,7 +448,7 @@ int main(){
         t6.readData(inp);
     }
     else{
-        cout<<"Teaccher opening failsed";
+        std::cout<<"Teaccher opening failsed";
     }
     teacher teachers[]={t1,t2,t3,t4,t5,t6};
     bob.close();

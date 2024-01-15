@@ -1,19 +1,18 @@
 #include<string>
 #include"configs.cpp"
 //includes
-using namespace std;
 //namespace declaration
 class room{
     public:
-        string name;
+        std::string name;
         int capacity=0;
         bool labOrNot=0;
-        string building; 
+        std::string building; 
         bool timeTable[days][periods];//when room is free. 0 for free 1 for occupiued.
         int timeTableName[days][periods];//what class the rooms is holding. changes done by program, not taken from user.
-        bool readData(string inp);
+        bool readData(std::string inp);
         void showTimeTable();
-        string convertToString();
+        std::string convertToString();
         room(){
             for(int i=0;i<days;i++){
                 for(int j=0;j<periods;j++){
@@ -25,12 +24,12 @@ class room{
 void room::showTimeTable(){
     for(int i=0;i<days;i++){
         for(int j=0;j<periods;j++){
-            cout<<timeTable[i][j]<<" , ";
+            std::cout<<timeTable[i][j]<<" , ";
         }
-        cout<<endl;
+        std::cout<<std::endl;
     }
 }
-bool room::readData(string inp){
+bool room::readData(std::string inp){
     enum format{
         namen,
         capacityn,
@@ -84,12 +83,12 @@ bool room::readData(string inp){
     a:
     return 1;
 }
-string room::convertToString(){
-    string output;
-    output+=name+","+to_string(capacity)+","+to_string(labOrNot)+","+building;
+std::string room::convertToString(){
+    std::string output;
+    output+=name+","+std::to_string(capacity)+","+std::to_string(labOrNot)+","+building;
     for(int i=0;i<days;i++){
         for(int j=0;j<days;j++){
-            output+=","+to_string(timeTable[i][j])+","+to_string(timeTableName[i][j]);
+            output+=","+std::to_string(timeTable[i][j])+","+std::to_string(timeTableName[i][j]);
         }
     }
     return output;
