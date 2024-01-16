@@ -1,27 +1,25 @@
 #include<string>
 #include"configs.cpp"
 #include<vector>
-using namespace std;
 
 class subject{
     public:
-        string name;
-        string elective;
-        int lab;
-         int credits,hoursPerCredit;
+        std::string name;
+        std::string elective;
+        bool lab;
+        int credits,hoursPerCredit;
         unsigned short int bFactor;
-        unsigned int *rooms;
+        std::string *rooms;
         unsigned short int noRooms;
-        bool readData(string inp);
-        string convertToString();
+        bool readData(std::string inp);
+        std::string convertToString();
         subject(){
             credits=0;
             hoursPerCredit=0;
             bFactor=0;
         };
-
 };
-bool subject::readData(string inp){
+bool subject::readData(std::string inp){
     enum format{
         namen,
         electiven,
@@ -60,11 +58,11 @@ bool subject::readData(string inp){
                 case roomsn:
                     int commaCount=0;
                     i++;
-                    vector<unsigned> temp;
+                    std::vector<std::string> temp;
                     while(true){
                         if(inp[i]==']'){
                             noRooms=commaCount+1;
-                             rooms=new unsigned[noRooms];
+                             rooms=new std::string[noRooms];
                              for(commaCount;commaCount>=0;commaCount--){
                                  rooms[commaCount]=temp[commaCount];
                              }
@@ -75,10 +73,11 @@ bool subject::readData(string inp){
                         }
                         else{
                             if(temp.size()>commaCount){
-                                temp[commaCount]=temp[commaCount]*10+inp[i]-'0';
+                                temp[commaCount].push_back(inp[i]);
                             }
                            else{
-                            temp.push_back(inp[i]-'0');
+                            temp.push_back("");
+                            temp[commaCount].push_back(inp[i]);
                            }
                         }
                         i++;
@@ -91,17 +90,17 @@ bool subject::readData(string inp){
          return 0;
      }
 }
-string subject::convertToString(){
-    string out;
+std::string subject::convertToString(){
+    std::string out;
     out=name+",";
     out+=elective+",";
-    out+=to_string(lab)+",";
-    out+=to_string(credits)+",";
-    out+=to_string(hoursPerCredit)+",";
-    out+=to_string(bFactor)+",[";
+    out+=std::to_string(lab)+",";
+    out+=std::to_string(credits)+",";
+    out+=std::to_string(hoursPerCredit)+",";
+    out+=std::to_string(bFactor)+",[";
     for(int i=0;i<noRooms-1;i++){
-        out+=to_string(rooms[i])+",";
+        out+=rooms[i]+",";
     }
-    out+=to_string(rooms[noRooms-1])+"]";
+    out+=rooms[noRooms-1]+"]";
     return out;
 }
