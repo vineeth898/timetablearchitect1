@@ -35,27 +35,7 @@ vector<vector<bool>> intersectElectives(vector<teacher> teacherList,int credits)
 
 int main(){
     fstream bob;
-    string inp;
-     bob.open("datastorage/teacher.csv");
-    teacher t1,t2,t3,t4,t5,t6;
-    if(bob.is_open()){
-        bob>>inp;
-        t1.readData(inp);
-        bob>>inp;
-        t2.readData(inp);
-        bob>>inp;
-        t3.readData(inp);
-        bob>>inp;
-        t4.readData(inp);
-        bob>>inp;
-        t5.readData(inp);
-        bob>>inp;
-        t6.readData(inp);
-    }
-    else{
-        cout<<"Teacher opening failed";
-    }
-    vector<teacher> boby={t1,t2,t3,t4};
-    intersectElectives(boby,3);
-    bob.close();
+    bob.open("datastorage/teacher.csv",fstream::app);
+    teacher t;
+    t.name="vabu";
 }
