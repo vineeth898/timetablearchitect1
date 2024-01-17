@@ -323,6 +323,7 @@ void section::makeTIMETABLE(){
                 while(ptr != weightsl.end()){
                     weights[j]=*ptr;
                     ptr++;
+                    j++;
                 }
                 for(int j=0;j<days;j++){
                     for(int k=0;k<periods;k++){
@@ -364,7 +365,6 @@ void section::makeTIMETABLE(){
                 }
             } 
             else{
-                //std::cout<<"collision! ";
                 int assigned=coreSubjects[i].credits;
                 for(int j=0;j<days;j++){
                     for(int k=0;k<periods;k++){
@@ -449,7 +449,6 @@ void section::makeTIMETABLE(){
                         }
                     }
                 }  
-                std::cout<<assigned<<"resolved!!! \n";  
             }
         }
         else if(coreSubjects[i].hoursPerCredit==2){
@@ -478,6 +477,7 @@ void section::makeTIMETABLE(){
                         }
                     }
                 }
+                
                 std::list<int> weightsl;
                 for(int o=0;o<weights.size();o++){
                     weightsl.push_back(weights[o]);
@@ -488,6 +488,7 @@ void section::makeTIMETABLE(){
                 while(ptr != weightsl.end()){
                     weights[j]=*ptr;
                     ptr++;
+                    j++;
                 }
                 for(int j=0;j<days;j++){
                     for(int k=0;k<periods;k+=2){
