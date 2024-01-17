@@ -5,7 +5,10 @@
 #include"teacher.cpp"
 #include"room.cpp"
 #include"subject.cpp"
-#include<bits/stdc++.h>
+#include<fstream>
+#include<algorithm>
+#include<list>
+//#include<bits/stdc++.h>
 /*
 First step:
 Configure teachers and subjects
@@ -262,7 +265,7 @@ void section::makeTIMETABLE(){
     }
     //core subjects allocation
     for(int i=0;i<coreTeachers.size();i++){
-        std::cout<<"\niterating through: "<<coreSubjects[i].name;
+       // std::cout<<"\niterating through: "<<coreSubjects[i].name;
         creditsl=0;
         std::vector<room> defRooms;
         room roomDefault;int highest=0;
@@ -298,7 +301,7 @@ void section::makeTIMETABLE(){
                 }
             }
             if(!collision){
-                std::cout<<"\nno collision for: "<<coreSubjects[i].name;
+                //std::cout<<"\nno collision for: "<<coreSubjects[i].name;
                 std::vector<int> weights;
                 int numberclasses=coreSubjects[i].credits;
                 for(int j=0;j<days;j++){
@@ -310,7 +313,17 @@ void section::makeTIMETABLE(){
                         }
                     }
                 }
-                sort(weights.begin(),weights.end());
+                std::list<int> weightsl;
+                for(int o=0;o<weights.size();o++){
+                    weightsl.push_back(weights[o]);
+                }
+                weightsl.sort();
+                std::list<int>::iterator ptr=weightsl.begin();
+                int j=0;
+                while(ptr != weightsl.end()){
+                    weights[j]=*ptr;
+                    ptr++;
+                }
                 for(int j=0;j<days;j++){
                     for(int k=0;k<periods;k++){
                         if(!coreTeachers[i].timeTable[j][k]){
@@ -351,7 +364,7 @@ void section::makeTIMETABLE(){
                 }
             } 
             else{
-                std::cout<<"collision! ";
+                //std::cout<<"collision! ";
                 int assigned=coreSubjects[i].credits;
                 for(int j=0;j<days;j++){
                     for(int k=0;k<periods;k++){
@@ -465,7 +478,17 @@ void section::makeTIMETABLE(){
                         }
                     }
                 }
-                sort(weights.begin(),weights.end());
+                std::list<int> weightsl;
+                for(int o=0;o<weights.size();o++){
+                    weightsl.push_back(weights[o]);
+                }
+                weightsl.sort();
+                std::list<int>::iterator ptr=weightsl.begin();
+                int j=0;
+                while(ptr != weightsl.end()){
+                    weights[j]=*ptr;
+                    ptr++;
+                }
                 for(int j=0;j<days;j++){
                     for(int k=0;k<periods;k+=2){
                         if(!coreTeachers[i].timeTable[j][k] && !coreTeachers[i].timeTable[j][k+1]){
