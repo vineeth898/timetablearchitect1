@@ -399,47 +399,55 @@ void section::makeTIMETABLE(){
                             }
                             if(assigned){
                                 teacher &present=returnTeacher(teacherTable[j][k]);
+                                subject& presentSub=returnSubject(timeTable[j][k]);
                                 if(error_){
                                     break;
                                 }
                                 for(int l=0;l<days;l++){
+                                    bool flag=1;
                                     for(int m=0;m<periods;m++){
-
+                                        if(timeTable[l][m]==presentSub.name){
+                                            if(l!=j || k!=m){
+                                                l++;
+                                                flag=0;
+                                            }
+                                        }
                                     }
-                                }
-                                for(int l=0;l<days;l++){
-                                    for(int m=0;m<periods;m++){
-                                        if(timeTable[l][m]=="f" && !present.timeTable[l][m] && assigned){
-                                            subject& presentSub=returnSubject(timeTable[j][k]);
-                                            timeTable[j][k]=coreSubjects[i].name;
-                                            teacherTable[j][k]=coreTeachers[i].name;
-                                            dayfactor[j]+=coreSubjects[i].bFactor*5-presentSub.bFactor*5;
-                                            coreTeachers[i].timeTable[j][k]=1;
-                                            coreTeachers[i].timeTableName[j][k]=name;
-                                            present.timeTable[j][k]=0;
-                                            //check if default rooms for new subject
-                                            timeTable[l][m]=presentSub.name;
-                                            teacherTable[l][m]=present.name;
-                                            dayfactor[l]+=presentSub.bFactor*5;
-                                            present.timeTable[l][m]=1;
-                                            present.timeTableName[l][m]=name;
-                                            assigned--;
-                                            if(coreSubjects[i].rooms[0]=="0"){
-                                                if(!roomDefault.timeTable[l][m]){
-                                                    roomDefault.timeTable[l][m]=1;
-                                                    roomDefault.timeTableName[l][m]=name;
-                                                    roomTable[l][m]=roomDefault.name;
-                                                }
-                                                else{
-                                                    for(int s=0;s<defRooms.size();s++){
-                                                        if(!defRooms[s].timeTable[l][m]){
-                                                            defRooms[s].timeTable[l][m]=1;
-                                                            defRooms[s].timeTableName[l][m]=name;
-                                                            roomTable[l][m]=defRooms[s].name;
-                                                            break;
-                                                        }
-                                                        roomTable[j][k]="?????";
+                                    if(flag){
+                                        for(int m=0;m<periods;m++){
+                                            if(timeTable[l][m]=="f" && !present.timeTable[l][m] && assigned){
+                                                subject& presentSub=returnSubject(timeTable[j][k]);
+                                                timeTable[j][k]=coreSubjects[i].name;
+                                                teacherTable[j][k]=coreTeachers[i].name;
+                                                dayfactor[j]+=coreSubjects[i].bFactor*5-presentSub.bFactor*5;
+                                                coreTeachers[i].timeTable[j][k]=1;
+                                                coreTeachers[i].timeTableName[j][k]=name;
+                                                present.timeTable[j][k]=0;
+                                                //check if default rooms for new subject
+                                                timeTable[l][m]=presentSub.name;
+                                                teacherTable[l][m]=present.name;
+                                                dayfactor[l]+=presentSub.bFactor*5;
+                                                present.timeTable[l][m]=1;
+                                                present.timeTableName[l][m]=name;
+                                                assigned--;
+                                                if(coreSubjects[i].rooms[0]=="0"){
+                                                    if(!roomDefault.timeTable[l][m]){
+                                                        roomDefault.timeTable[l][m]=1;
+                                                        roomDefault.timeTableName[l][m]=name;
+                                                        roomTable[l][m]=roomDefault.name;
                                                     }
+                                                    else{
+                                                        for(int s=0;s<defRooms.size();s++){
+                                                            if(!defRooms[s].timeTable[l][m]){
+                                                                defRooms[s].timeTable[l][m]=1;
+                                                                defRooms[s].timeTableName[l][m]=name;
+                                                                roomTable[l][m]=defRooms[s].name;
+                                                                break;
+                                                            }
+                                                            roomTable[j][k]="?????";
+                                                        }
+                                                    }
+                                                    break;
                                                 }
                                             }
                                         }
