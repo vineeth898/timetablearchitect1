@@ -1,0 +1,7 @@
+NEW TIME TABLE:   
+CAEG,Physics,f,f,f,f
+chemistry,f,f,f,Physics,f
+chemistry,Physics,Maths,f,f,f
+chemistry,Maths,f,f,f,f
+ChemLab,ChemLab,Maths,f,f,f
+chemistry,Maths,f,Physics,f,f
