@@ -1,21 +1,310 @@
-#include<string>
-#include<iostream>
-#include"configs.cpp"
-#include<vector>
-#include"teacher.cpp"
-#include"room.cpp"
-#include"subject.cpp"
 #include<fstream>
 #include<algorithm>
 #include<list>
-//#include<bits/stdc++.h>
-/*
-First step:
-Configure teachers and subjects
-1) use addElective(teacher for subject,subject) to assign teachers and subject . passed arguments are the teacher and subject objects that have been provided;
-2)use addLabs(list of teachers who are can take the class,number of the teachers given in the prev parameter,lab subject). 
-3)use block(day,period,message at blocked place,teacher at blocked place) to prevent the program from assigning class at that time also alters timetable name at t the places mentioned.
-*/
+#include<string>
+#include<iostream>
+#include<vector>
+#define days 6
+#define periods 6
+
+class subject{
+    public:
+        std::string name;
+        std::string elective;
+        bool lab;
+        int credits,hoursPerCredit;
+        unsigned short int bFactor;
+        std::string *rooms;
+        unsigned short int noRooms;
+        bool readData(std::string inp);
+        std::string convertToString();
+        subject(){
+            credits=0;
+            hoursPerCredit=0;
+            bFactor=0;
+        };
+};
+bool subject::readData(std::string inp){
+    enum format{
+        namen,
+        electiven,
+        labn,
+        creditsn,
+        hoursPerCreditn,
+        bFactorn,
+        roomsn,
+    };
+    int commaCount=0;
+    try{
+        for(int i=0;i<inp.size();i++){
+            if(inp[i]==','){
+                commaCount++;
+                continue;
+            }
+            switch(commaCount){
+                case namen:
+                    name.push_back(inp[i]);
+                    break;
+                case electiven:
+                    elective.push_back(inp[i]);
+                    break;
+                case labn:
+                    lab=inp[i]-'0';
+                    break;
+                case creditsn:
+                    credits=credits*10+inp[i]-'0';
+                    break;
+                case hoursPerCreditn:
+                    hoursPerCredit=hoursPerCredit*10+inp[i]-'0';
+                    break;
+                case bFactorn:
+                    bFactor=bFactor*10+inp[i]-'0';
+                    break;
+                case roomsn:
+                    int commaCount=0;
+                    i++;
+                    std::vector<std::string> temp;
+                    while(true){
+                        if(inp[i]==']'){
+                            noRooms=commaCount+1;
+                             rooms=new std::string[noRooms];
+                             for(commaCount;commaCount>=0;commaCount--){
+                                 rooms[commaCount]=temp[commaCount];
+                             }
+                            break;
+                        }
+                        else if(inp[i]==','){
+                            commaCount++;
+                        }
+                        else{
+                            if(temp.size()>commaCount){
+                                temp[commaCount].push_back(inp[i]);
+                            }
+                           else{
+                            temp.push_back("");
+                            temp[commaCount].push_back(inp[i]);
+                           }
+                        }
+                        i++;
+                    }
+
+            }
+        }
+     }
+     catch(...){
+         return 0;
+     }
+}
+
+class room{
+    public:
+        std::string name;
+        int capacity=0;
+        bool labOrNot=0;
+        std::string building; 
+        bool timeTable[days][periods];//when room is free. 0 for free 1 for occupiued.
+        int timeTableName[days][periods];//what class the rooms is holding. changes done by program, not taken from user.
+        bool readData(std::string inp);
+        void showTimeTable();
+        std::string convertToString();
+        room(){
+            for(int i=0;i<days;i++){
+                for(int j=0;j<periods;j++){
+                    timeTableName[i][j]=0;
+                }
+            }
+        }//initialise all classes to zero.
+};
+void room::showTimeTable(){
+    // for(int i=0;i<days;i++){
+    //     for(int j=0;j<periods;j++){
+    //         std::cout<<timeTable[i][j]<<" , ";
+    //     }
+    //     std::cout<<std::endl;
+    // }
+}
+bool room::readData(std::string inp){
+    enum format{
+        namen,
+        capacityn,
+        labOrNotn,
+        buildingn,
+        timeTablen
+    };
+    int commacount=0;
+    try{
+        for(int i=0;i<inp.size();i++){
+            if(inp[i]==','){
+                commacount++;
+                continue;
+            }
+            switch(commacount){
+                case namen:
+                    name.push_back(inp[i]);
+                    break;//read name
+                case capacityn:
+                    capacity=capacity*10+inp[i]-'0';
+                    break;//read branch
+                case labOrNotn:
+                    labOrNot=inp[i]-'0';
+                    break;//read workhours
+                case buildingn:
+                    building.push_back(inp[i]);
+                    break;//read name
+                case timeTablen:
+                    commacount=0;
+                    int strptr=i;
+                    while(inp[strptr]){
+                        if(inp[strptr]==','){
+                            commacount++;
+                        }
+                        else if(!(commacount%2)){
+                            timeTable[commacount/12][(commacount%12)/2]=inp[strptr]-'0';
+                        }
+                        else{
+                            timeTableName[commacount/12][(commacount%12)/2]=timeTableName[commacount/12][(commacount%12)/2]*10+inp[strptr]-'0';
+                        }
+                        strptr++;
+                    }   
+                    goto a;
+                    break;
+            }
+        }
+    }
+    catch(...){
+        return 0;
+    }
+    a:
+    return 1;
+}
+std::string room::convertToString(){
+    std::string output;
+    output+=name+","+std::to_string(capacity)+","+std::to_string(labOrNot)+","+building;
+    for(int i=0;i<days;i++){
+        for(int j=0;j<days;j++){
+            output+=","+std::to_string(timeTable[i][j])+","+std::to_string(timeTableName[i][j]);
+        }
+    }
+    return output;
+}
+std::string subject::convertToString(){
+    std::string out;
+    out=name+",";
+    out+=elective+",";
+    out+=std::to_string(lab)+",";
+    out+=std::to_string(credits)+",";
+    out+=std::to_string(hoursPerCredit)+",";
+    out+=std::to_string(bFactor)+",[";
+    for(int i=0;i<noRooms-1;i++){
+        out+=rooms[i]+",";
+    }
+    out+=rooms[noRooms-1]+"]";
+    return out;
+}
+
+class teacher{
+    public:
+        std::string name;//name of teacher
+        std::string branch;//branch of teacher
+        //unsigned int workHours=0; //how many hours the teacher would work
+        bool timeTable[days][periods];//when teacher is free. 1 for free 0 for occupiued.
+        unsigned int timeTableName[days][periods];//what teacher is teaching when occupied. changes done by program, not taken from user.
+        bool readData(std::string inp);//function which converts std::string input from teacherdata to the objects data
+        std::string convertToString();//reverse of above
+        void showTimeTable();
+        teacher(){
+            for(int i=0;i<days;i++){
+                for(int j=0;j<periods;j++){
+                    timeTableName[i][j]=0;
+                }
+            }
+        }
+        //initialise all classes to zero.
+        
+        // teacher(const teacher &bob){
+        //     name=bob.name;
+        //     branch=bob.branch;
+        //     for(int i=0;i<days;i++){
+        //         for(int j=0;j<periods;j++){
+        //             timeTable[i][j]=bob.timeTable[i][j];
+        //             timeTableName[i][j]=bob.timeTableName[i][j];
+        //         }
+        //     }
+        // }
+};
+bool teacher::readData(std::string inp){
+    enum format{
+        namen,
+        branchn,
+        //workHoursn,
+        timeTablen
+    };//Used for switch statements. each field corresponds to its location in the std::string
+    int commacount=0;//numebr of commas encountered
+    try{
+        for(int i=0;i<inp.size();i++){
+            if(inp[i]==','){
+                commacount++;
+                continue;
+            }//equivalent to next column
+            switch(commacount){
+                case namen:
+                    name.push_back(inp[i]);
+                    break;//read name
+                case branchn:
+                    branch.push_back(inp[i]);
+                    break;//read branch
+                /*case workHoursn:
+                    workHours=workHours*10+inp[i]-'0';
+                    break;//read workhours
+                    */
+                case timeTablen:
+                    commacount=0;
+                    int strptr=i;
+                    while(inp[strptr]){
+                        if(inp[strptr]==','){
+                            commacount++;
+                        }
+                        else if(!(commacount%2)){
+                            timeTable[commacount/12][(commacount%12)/2]=inp[strptr]-'0';
+                        }
+                        else{
+                            timeTableName[commacount/12][(commacount%12)/2]=timeTableName[commacount/12][(commacount%12)/2]*10+inp[strptr]-'0';
+                        }
+                        strptr++;
+                    }   
+                    goto a;
+                    break;
+            }
+        }
+    }
+    catch(...){
+        return 0;
+    }
+    a:
+    return 1;
+}
+std::string teacher::convertToString(){
+    std::string output;
+    output=name;
+    output.push_back(',');
+    output+=branch;
+    //output.push_back(',');
+    //output+=std::to_string(workHours);
+    for(int i=0;i<days;i++){
+        for(int j=0;j<days;j++){
+            output+=","+std::to_string(timeTable[i][j])+","+std::to_string(timeTableName[i][j]);
+        }
+    }
+    return output;
+}
+void teacher::showTimeTable(){
+    // for(int i=0;i<days;i++){
+    //     for(int j=0;j<periods;j++){
+    //         std::cout<<timeTable[i][j]<<"      ";
+    //     }
+    //     std::cout<<std::endl;
+    // }
+}
 class section{
     public:
         int name;
@@ -100,30 +389,30 @@ class section{
 };
 
 void section::displayTimeTable(){
-    for(int i=0;i<days;i++){
-        for(int j=0;j<periods;j++){
-            std::cout<<timeTable[i][j]<<"      ";
-        }
-        std::cout<<"   bfactor: "<<dayfactor[i]<<std::endl;
-    }
+    // for(int i=0;i<days;i++){
+    //     for(int j=0;j<periods;j++){
+    //         std::cout<<timeTable[i][j]<<"      ";
+    //     }
+    //     std::cout<<"   bfactor: "<<dayfactor[i]<<std::endl;
+    // }
 }
 
 void section::displayTeacherTable(){
-    for(int i=0;i<days;i++){
-        for(int j=0;j<periods;j++){
-            std::cout<<teacherTable[i][j]<<"      ";
-        }
-        std::cout<<std::endl;
-    }
+    // for(int i=0;i<days;i++){
+    //     for(int j=0;j<periods;j++){
+    //         std::cout<<teacherTable[i][j]<<"      ";
+    //     }
+    //     std::cout<<std::endl;
+    // }
 }
 
 void section::displayClassTable(){
-    for(int i=0;i<days;i++){
-        for(int j=0;j<periods;j++){
-            std::cout<<roomTable[i][j]<<"      ";
-        }
-        std::cout<<std::endl;
-    }
+    // for(int i=0;i<days;i++){
+    //     for(int j=0;j<periods;j++){
+    //         std::cout<<roomTable[i][j]<<"      ";
+    //     }
+    //     std::cout<<std::endl;
+    // }
 }
 
 void section::addCore(teacher Teacher,subject Subject){
@@ -270,7 +559,7 @@ void section::makeTIMETABLE(){
             }
         }
         else{
-            std::cout<<"bob";
+            //std::cout<<"bob";
         }
     }
     //core subjects allocation
@@ -386,7 +675,7 @@ void section::makeTIMETABLE(){
                 }
             } 
             else{
-                std::cout<<"collision of subject "<<coreSubjects[i].name<<std::endl;
+                //std::cout<<"collision of subject "<<coreSubjects[i].name<<std::endl;
                 int assigned=coreSubjects[i].credits;
                 for(int j=0;j<days;j++){
                     for(int k=0;k<periods;k++){
@@ -608,87 +897,3 @@ std::vector<std::vector<bool>> intersectElectives(std::vector<teacher> teacherLi
     } 
     return returnVal;
 }
-
-int main(){
-    std::fstream bob;
-    bob.open("datastorage/room.csv");
-    std::string inp;
-    section cse;
-    if(bob.is_open()){
-        bob>>inp;
-        room c1,c2,c3,c4,c5;
-        c1.readData(inp);
-        bob>>inp;
-        c2.readData(inp);
-        bob>>inp;
-        c3.readData(inp);
-        bob>>inp;
-        c4.readData(inp);
-        bob>>inp;
-        bob>>inp;
-        c5.readData(inp);
-        cse.allRooms.push_back(c1);
-        cse.allRooms.push_back(c2);
-        cse.allRooms.push_back(c3);
-        cse.allRooms.push_back(c4);
-        cse.allRooms.push_back(c5);
-        cse.defaultRooms.push_back(c1.name);
-        cse.defaultRooms.push_back(c2.name);
-        cse.defaultRooms.push_back(c3.name);
-        cse.defaultRooms.push_back(c4.name);
-    }
-    else{
-        std::cout<<"room opening failsed";
-    }
-    bob.close();
-    bob.open("datastorage/teacher.csv");
-    teacher t1,t2,t3,t4,t5,t6,t7;
-    if(bob.is_open()){
-        bob>>inp;
-        t1.readData(inp);
-        bob>>inp;
-        t2.readData(inp);
-        bob>>inp;
-        t3.readData(inp);
-        bob>>inp;
-        t4.readData(inp);
-        bob>>inp;
-        t5.readData(inp);
-        bob>>inp;
-        t6.readData(inp);
-        bob>>inp;
-        t7.readData(inp);
-    }
-    else{
-        std::cout<<"Teaccher opening failsed";
-    }
-    teacher teachers[]={t1,t2,t3,t4,t5,t6};
-    bob.close();
-    bob.open("datastorage/subject.csv");
-    if(bob.is_open()){
-        bob>>inp;
-        subject labone;
-        labone.readData(inp);
-        cse.addLab(teachers,6,labone,2);
-        subject sub1,sub2,sub3,sub4;
-        bob>>inp;
-        sub1.readData(inp);
-        bob>>inp;
-        sub2.readData(inp);
-        bob>>inp;
-        sub3.readData(inp);
-        bob>>inp;
-        sub4.readData(inp);
-        cse.addCore(t1,sub1);
-        cse.addCore(t2,sub2);
-        cse.addCore(t6,sub3);
-        cse.addCore(t7,sub4);
-        cse.makeTIMETABLE();
-        std::cout<<"DISPLAYING TIME TABLE\n";
-        cse.displayTimeTable();
-        std::cout<<"DISPLAYING CLASS TABLE\n";
-        cse.displayClassTable();
-        std::cout<<"DISPLAYING TEACHER TABLE\n";
-        cse.displayTeacherTable();
-    }
-} 
