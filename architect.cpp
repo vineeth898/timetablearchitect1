@@ -253,6 +253,16 @@ void section::makeTIMETABLE(){
                         teacherTable[k][l+1]=selectedTeachers[0].name+" , "+selectedTeachers[1].name+" , "+selectedTeachers[2].name+" , "+selectedTeachers[3].name;
                         roomTable[k][l]=candidates[highestindex][0].name+" , "+candidates[highestindex][1].name;
                         roomTable[k][l+1]=candidates[highestindex][0].name+" , "+candidates[highestindex][1].name;
+                        room tempUpdate=returnRoom(candidates[highestindex][0].name);
+                        tempUpdate.timeTable[k][l]=1;
+                        tempUpdate.timeTable[k][l+1]=1;
+                        tempUpdate.timeTableName[k][l]=name;
+                        tempUpdate.timeTableName[k][l+1]=name;
+                        room tempUpdateA=returnRoom(candidates[highestindex][1].name);
+                        tempUpdateA.timeTable[k][l]=1;
+                        tempUpdateA.timeTable[k][l+1]=1;
+                        tempUpdateA.timeTableName[k][l]=name;
+                        tempUpdateA.timeTableName[k][l+1]=name;
                         creditsForLab--;
                         break;
                     }
@@ -355,6 +365,17 @@ void section::makeTIMETABLE(){
                                                 roomTable[j][k]="?????";
                                             }
                                         }
+                                        else{
+                                            for(int q=0;q<coreSubjects[i].noRooms;q++){
+                                                room temp=returnRoom(coreSubjects[i].rooms[q]);
+                                                if(!temp.timeTable[j][k]){
+                                                    temp.timeTableName[j][k]=name;
+                                                    temp.timeTable[j][k]=1;
+                                                    roomTable[j][k]=temp.name;
+                                                    goto a;
+                                                }
+                                            }
+                                        }
                                         a:
                                         break;
                                     }
@@ -365,6 +386,7 @@ void section::makeTIMETABLE(){
                 }
             } 
             else{
+                std::cout<<"collision of subject "<<coreSubjects[i].name<<std::endl;
                 int assigned=coreSubjects[i].credits;
                 for(int j=0;j<days;j++){
                     for(int k=0;k<periods;k++){
@@ -515,6 +537,43 @@ void section::makeTIMETABLE(){
                                         coreTeachers[i].timeTable[j][k+1]=1;
                                         coreTeachers[i].timeTableName[j][k+1]=name;
                                         break;
+                                        if(coreSubjects[i].rooms[0]=="0"){
+                                            if(!roomDefault.timeTable[j][k] && !roomDefault.timeTable[j][k+1]){
+                                                roomDefault.timeTable[j][k]=1;
+                                                roomDefault.timeTableName[j][k]=name;
+                                                roomTable[j][k]=roomDefault.name;
+                                                roomDefault.timeTable[j][k+1]=1;
+                                                roomDefault.timeTableName[j][k+1]=name;
+                                                roomTable[j][k+1]=roomDefault.name;
+                                            }
+                                            else{
+                                                for(int s=0;s<defRooms.size();s++){
+                                                    if(!defRooms[s].timeTable[j][k] && !defRooms[s].timeTable[j][k+1]){
+                                                        defRooms[s].timeTable[j][k]=1;
+                                                        defRooms[s].timeTableName[j][k]=name;
+                                                        roomTable[j][k]=defRooms[s].name;
+                                                        defRooms[s].timeTable[j][k+1]=1;
+                                                        defRooms[s].timeTableName[j][k+1]=name;
+                                                        roomTable[j][k+1]=defRooms[s].name;
+                                                        goto c;
+                                                    }
+                                                }
+                                                roomTable[j][k]="?????";
+                                            }
+                                        }
+                                        else{
+                                            for(int q=0;q<coreSubjects[i].noRooms;q++){
+                                                room temp=returnRoom(coreSubjects[i].rooms[q]);
+                                                if(!temp.timeTable[j][k]){
+                                                    temp.timeTableName[j][k]=name;
+                                                    temp.timeTable[j][k]=1;
+                                                    roomTable[j][k]=temp.name;
+                                                    goto c;
+                                                }
+                                            }
+                                        }
+                                        c:
+                                        break;
                                     }
                                 }
                             }
@@ -557,7 +616,7 @@ int main(){
     section cse;
     if(bob.is_open()){
         bob>>inp;
-        room c1,c2,c3,c4;
+        room c1,c2,c3,c4,c5;
         c1.readData(inp);
         bob>>inp;
         c2.readData(inp);
@@ -565,10 +624,14 @@ int main(){
         c3.readData(inp);
         bob>>inp;
         c4.readData(inp);
+        bob>>inp;
+        bob>>inp;
+        c5.readData(inp);
         cse.allRooms.push_back(c1);
         cse.allRooms.push_back(c2);
         cse.allRooms.push_back(c3);
         cse.allRooms.push_back(c4);
+        cse.allRooms.push_back(c5);
         cse.defaultRooms.push_back(c1.name);
         cse.defaultRooms.push_back(c2.name);
         cse.defaultRooms.push_back(c3.name);
@@ -579,7 +642,7 @@ int main(){
     }
     bob.close();
     bob.open("datastorage/teacher.csv");
-    teacher t1,t2,t3,t4,t5,t6;
+    teacher t1,t2,t3,t4,t5,t6,t7;
     if(bob.is_open()){
         bob>>inp;
         t1.readData(inp);
@@ -593,6 +656,8 @@ int main(){
         t5.readData(inp);
         bob>>inp;
         t6.readData(inp);
+        bob>>inp;
+        t7.readData(inp);
     }
     else{
         std::cout<<"Teaccher opening failsed";
@@ -605,17 +670,25 @@ int main(){
         subject labone;
         labone.readData(inp);
         cse.addLab(teachers,6,labone,2);
-        subject sub1,sub2,sub3;
+        subject sub1,sub2,sub3,sub4;
         bob>>inp;
         sub1.readData(inp);
         bob>>inp;
         sub2.readData(inp);
         bob>>inp;
         sub3.readData(inp);
+        bob>>inp;
+        sub4.readData(inp);
         cse.addCore(t1,sub1);
         cse.addCore(t2,sub2);
         cse.addCore(t6,sub3);
+        cse.addCore(t7,sub4);
         cse.makeTIMETABLE();
+        std::cout<<"DISPLAYING TIME TABLE\n";
         cse.displayTimeTable();
+        std::cout<<"DISPLAYING CLASS TABLE\n";
+        cse.displayClassTable();
+        std::cout<<"DISPLAYING TEACHER TABLE\n";
+        cse.displayTeacherTable();
     }
 } 

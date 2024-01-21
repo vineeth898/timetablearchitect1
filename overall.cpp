@@ -542,15 +542,29 @@ void section::makeTIMETABLE(){
                         teacherTable[k][l+1]=selectedTeachers[0].name+" , "+selectedTeachers[1].name+" , "+selectedTeachers[2].name+" , "+selectedTeachers[3].name;
                         roomTable[k][l]=candidates[highestindex][0].name+" , "+candidates[highestindex][1].name;
                         roomTable[k][l+1]=candidates[highestindex][0].name+" , "+candidates[highestindex][1].name;
+                        room tempUpdate=returnRoom(candidates[highestindex][0].name);
+                        tempUpdate.timeTable[k][l]=1;
+                        tempUpdate.timeTable[k][l+1]=1;
+                        tempUpdate.timeTableName[k][l]=name;
+                        tempUpdate.timeTableName[k][l+1]=name;
+                        room tempUpdateA=returnRoom(candidates[highestindex][1].name);
+                        tempUpdateA.timeTable[k][l]=1;
+                        tempUpdateA.timeTable[k][l+1]=1;
+                        tempUpdateA.timeTableName[k][l]=name;
+                        tempUpdateA.timeTableName[k][l+1]=name;
                         creditsForLab--;
                         break;
                     }
                 }
             }
         }
+        else{
+            //std::cout<<"bob";
+        }
     }
     //core subjects allocation
     for(int i=0;i<coreTeachers.size();i++){
+       // std::cout<<"\niterating through: "<<coreSubjects[i].name;
         creditsl=0;
         std::vector<room> defRooms;
         room roomDefault;int highest=0;
@@ -586,6 +600,7 @@ void section::makeTIMETABLE(){
                 }
             }
             if(!collision){
+                //std::cout<<"\nno collision for: "<<coreSubjects[i].name;
                 std::vector<int> weights;
                 int numberclasses=coreSubjects[i].credits;
                 for(int j=0;j<days;j++){
@@ -639,6 +654,17 @@ void section::makeTIMETABLE(){
                                                 roomTable[j][k]="?????";
                                             }
                                         }
+                                        else{
+                                            for(int q=0;q<coreSubjects[i].noRooms;q++){
+                                                room temp=returnRoom(coreSubjects[i].rooms[q]);
+                                                if(!temp.timeTable[j][k]){
+                                                    temp.timeTableName[j][k]=name;
+                                                    temp.timeTable[j][k]=1;
+                                                    roomTable[j][k]=temp.name;
+                                                    goto a;
+                                                }
+                                            }
+                                        }
                                         a:
                                         break;
                                     }
@@ -649,6 +675,7 @@ void section::makeTIMETABLE(){
                 }
             } 
             else{
+                //std::cout<<"collision of subject "<<coreSubjects[i].name<<std::endl;
                 int assigned=coreSubjects[i].credits;
                 for(int j=0;j<days;j++){
                     for(int k=0;k<periods;k++){
@@ -798,6 +825,43 @@ void section::makeTIMETABLE(){
                                         teacherTable[j][k+1]=coreTeachers[i].name;
                                         coreTeachers[i].timeTable[j][k+1]=1;
                                         coreTeachers[i].timeTableName[j][k+1]=name;
+                                        break;
+                                        if(coreSubjects[i].rooms[0]=="0"){
+                                            if(!roomDefault.timeTable[j][k] && !roomDefault.timeTable[j][k+1]){
+                                                roomDefault.timeTable[j][k]=1;
+                                                roomDefault.timeTableName[j][k]=name;
+                                                roomTable[j][k]=roomDefault.name;
+                                                roomDefault.timeTable[j][k+1]=1;
+                                                roomDefault.timeTableName[j][k+1]=name;
+                                                roomTable[j][k+1]=roomDefault.name;
+                                            }
+                                            else{
+                                                for(int s=0;s<defRooms.size();s++){
+                                                    if(!defRooms[s].timeTable[j][k] && !defRooms[s].timeTable[j][k+1]){
+                                                        defRooms[s].timeTable[j][k]=1;
+                                                        defRooms[s].timeTableName[j][k]=name;
+                                                        roomTable[j][k]=defRooms[s].name;
+                                                        defRooms[s].timeTable[j][k+1]=1;
+                                                        defRooms[s].timeTableName[j][k+1]=name;
+                                                        roomTable[j][k+1]=defRooms[s].name;
+                                                        goto c;
+                                                    }
+                                                }
+                                                roomTable[j][k]="?????";
+                                            }
+                                        }
+                                        else{
+                                            for(int q=0;q<coreSubjects[i].noRooms;q++){
+                                                room temp=returnRoom(coreSubjects[i].rooms[q]);
+                                                if(!temp.timeTable[j][k]){
+                                                    temp.timeTableName[j][k]=name;
+                                                    temp.timeTable[j][k]=1;
+                                                    roomTable[j][k]=temp.name;
+                                                    goto c;
+                                                }
+                                            }
+                                        }
+                                        c:
                                         break;
                                     }
                                 }
