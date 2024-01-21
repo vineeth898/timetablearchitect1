@@ -42,6 +42,7 @@ class section{
         void displayTimeTable();
         void displayTeacherTable();
         void displayClassTable();
+        void storeTimeTable();
         //void addElective(teacher Teacher[],int numberOfTeachers,subject Subject);
         void block(int a,int b,std::string subject, std::string teacher);
         void makeTIMETABLE();
@@ -144,6 +145,25 @@ void section::addLab(teacher Teacher[],int noteachers,subject Subject,int noLabs
 void section::block(int i,int j,std::string Teacher, std::string Subject){
     timeTable[i][j]=Teacher;
     teacherTable[i][j]=Subject;
+}
+
+void section::storeTimeTable(){
+    std::fstream storage;
+    std::string bob="storage/"+std::to_string(name)+".csv";
+    storage.open(bob,std::ios::app);
+    storage<<"NEW TIME TABLE:   \n";
+    if(storage.is_open()){
+        for(int i=0;i<days;i++){
+            bob="";
+            for(int j=0;j<periods-1;j++){
+                bob+=timeTable[i][j]+",";
+            }
+            bob+=timeTable[i][periods-1]+"\n";
+            storage<<bob;
+        }
+        storage.close();
+    }
+    
 }
 
 void section::makeTIMETABLE(){
@@ -270,7 +290,7 @@ void section::makeTIMETABLE(){
             }
         }
         else{
-            std::cout<<"bob";
+            //std::cout<<"bob";
         }
     }
     //core subjects allocation
@@ -386,7 +406,7 @@ void section::makeTIMETABLE(){
                 }
             } 
             else{
-                std::cout<<"collision of subject "<<coreSubjects[i].name<<std::endl;
+                //std::cout<<"collision of subject "<<coreSubjects[i].name<<std::endl;
                 int assigned=coreSubjects[i].credits;
                 for(int j=0;j<days;j++){
                     for(int k=0;k<periods;k++){
@@ -690,5 +710,6 @@ int main(){
         cse.displayClassTable();
         std::cout<<"DISPLAYING TEACHER TABLE\n";
         cse.displayTeacherTable();
+        cse.storeTimeTable();
     }
 } 
