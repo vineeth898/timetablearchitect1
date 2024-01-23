@@ -131,7 +131,6 @@ void section::addLab(teacher Teacher[],int noteachers,subject Subject,int noLabs
     for(int i=0;i<noteachers;i++){
         bool flag=1;
         a.push_back(Teacher[i]);
-       
     }   
     labTeachers.push_back(a);
     labSubjects.push_back(Subject);
@@ -336,13 +335,19 @@ void section::makeTIMETABLE(){
             }
             if(!collision){
                 //std::cout<<"\nno collision for: "<<coreSubjects[i].name;
+                int currentAssigned=0;
+                repeat:
                 std::vector<int> weights;
-                int numberclasses=coreSubjects[i].credits;
+                int numberclasses=coreSubjects[i].credits-currentAssigned;
                 for(int j=0;j<days;j++){
+                    int discouragementFactor=1;
                     for(int k=0;k<periods;k++){
+                        if(timeTable[j][k]==coreSubjects[i].name){
+                            discouragementFactor=200;
+                        }
                         if(!returnTeacher(coreTeachers[i].name).timeTable[j][k]){
                             if(timeTable[j][k]=="f"){
-                                weights.push_back(weight(dayfactor[j],k,coreSubjects[i].bFactor));
+                                weights.push_back(weight(dayfactor[j],k,coreSubjects[i].bFactor*discouragementFactor));
                             }
                         }
                     }
@@ -360,11 +365,15 @@ void section::makeTIMETABLE(){
                     j++;
                 }
                 for(int j=0;j<days;j++){
+                    int discouragementFactor=1;
                     for(int k=0;k<periods;k++){
+                        if(timeTable[j][k]==coreSubjects[i].name){
+                            discouragementFactor=200;
+                        }
                         if(!returnTeacher(coreTeachers[i].name).timeTable[j][k]){
                             if(timeTable[j][k]=="f"){
-                                for(int a=0;a<weights.size();a++){
-                                    if(weight(dayfactor[j],k,coreSubjects[i].bFactor)==weights[a] && numberclasses){
+                                for(int a=0;a<coreSubjects[i].credits-currentAssigned;a++){
+                                    if(weight(dayfactor[j],k,coreSubjects[i].bFactor*discouragementFactor)==weights[a] && numberclasses){
                                         numberclasses--;
                                         dayfactor[j]+=coreSubjects[i].bFactor*5;
                                         timeTable[j][k]=coreSubjects[i].name;
@@ -407,6 +416,10 @@ void section::makeTIMETABLE(){
                             }
                         }
                     }
+                }
+                if(numberclasses>0){
+                    currentAssigned=coreSubjects[i].credits-numberclasses;
+                    goto repeat;
                 }
             } 
             else{
@@ -520,13 +533,19 @@ void section::makeTIMETABLE(){
                 }
             }
             if(!collision){
+                int classesAssigned=0;
+                repeat2:
                 std::vector<int> weights;
-                int numberclasses=coreSubjects[i].credits;
+                int numberclasses=coreSubjects[i].credits-classesAssigned;
                 for(int j=0;j<days;j++){
+                    int discouragementFactor=1;
                     for(int k=0;k<periods;k+=2){
+                        if(timeTable[j][k]==coreSubjects[i].name){
+                            discouragementFactor=200;
+                        }
                         if(!returnTeacher(coreTeachers[i].name).timeTable[j][k] && !returnTeacher(coreTeachers[i].name).timeTable[j][k+1]){
                             if(timeTable[j][k]=="f"){
-                                weights.push_back(weight(dayfactor[j],k,coreSubjects[i].bFactor));
+                                weights.push_back(weight(dayfactor[j],k,coreSubjects[i].bFactor*discouragementFactor));
                             }
                         }
                     }
@@ -545,11 +564,15 @@ void section::makeTIMETABLE(){
                     j++;
                 }
                 for(int j=0;j<days;j++){
+                    int discouragementFactor=1;
                     for(int k=0;k<periods;k+=2){
+                        if(timeTable[j][k]==coreSubjects[i].name){
+                            discouragementFactor=200;
+                        }
                         if(!returnTeacher(coreTeachers[i].name).timeTable[j][k] && !returnTeacher(coreTeachers[i].name).timeTable[j][k+1]){
                             if(timeTable[j][k]=="f"){
-                                for(int a=0;a<weights.size();a++){
-                                    if(weight(dayfactor[j],k,coreSubjects[i].bFactor)==weights[a] && numberclasses){
+                                for(int a=0;a<coreSubjects[i].credits-classesAssigned;a++){
+                                    if(weight(dayfactor[j],k,coreSubjects[i].bFactor*discouragementFactor)==weights[a] && numberclasses){
                                         numberclasses--;
                                         dayfactor[j]+=coreSubjects[i].bFactor*5;
                                         timeTable[j][k]=coreSubjects[i].name;
@@ -603,6 +626,10 @@ void section::makeTIMETABLE(){
                             }
                         }
                     }
+                }
+                if(numberclasses>0){
+                    classesAssigned=coreSubjects[i].credits-numberclasses;
+                    goto repeat2;
                 }
             } 
         }
@@ -665,6 +692,17 @@ int main(){
         std::cout<<"room opening failsed";
     }
     bob.close();
+    bob.open("datastorage/room.csv");
+    if(bob.is_open()){
+        while(!bob.eof()){
+            room temp;
+            std::string inp;
+            bob>>inp;
+            temp.readData(inp);
+            cse.allRooms.push_back(temp);
+        }
+    }
+    bob.close();
     bob.open("datastorage/teacher.csv");
     teacher t1,t2,t3,t4,t5,t6,t7;
     if(bob.is_open()){
@@ -687,6 +725,17 @@ int main(){
         std::cout<<"Teaccher opening failsed";
     }
     teacher teachers[]={t1,t2,t3,t4,t5,t6};
+    bob.close();
+    bob.open("datastorage/teacher.csv");
+    if(bob.is_open()){
+        while(!bob.eof()){
+            teacher temp;
+            std::string inp;
+            bob>>inp;
+            temp.readData(inp);
+            cse.allTeachers.push_back(temp);
+        }
+    }
     bob.close();
     bob.open("datastorage/subject.csv");
     if(bob.is_open()){
