@@ -435,6 +435,7 @@ void section::block(int i,int j,std::string Teacher, std::string Subject){
     timeTable[i][j]=Teacher;
     teacherTable[i][j]=Subject;
 }
+
 void section::storeTimeTable(){
     std::fstream storage;
     std::string bob="storage/"+std::to_string(name)+".csv";
@@ -453,6 +454,7 @@ void section::storeTimeTable(){
     }
     
 }
+
 void section::makeTIMETABLE(){
     int creditsl;
     bool collision=true;
@@ -601,6 +603,7 @@ void section::makeTIMETABLE(){
             }
         }
         if(coreSubjects[i].hoursPerCredit==1){
+            //std::cout<<"subject: "<<coreSubjects[i].name<<std::endl<<"credits required "<<coreSubjects[i].credits<<std::endl;
             for(int j=0;j<days;j++){
                 for(int k=0;k<periods;k++){
                     if(!coreTeachers[i].timeTable[j][k]){
@@ -610,13 +613,13 @@ void section::makeTIMETABLE(){
                     }
                     if(creditsl>=coreSubjects[i].credits){
                         collision=false;
-                        break;
                     }
                     else{
                         collision=true;
                     }
                 }
             }
+            //std::cout<<"available slots: "<<creditsl<<"\n";
             if(!collision){
                 //std::cout<<"\nno collision for: "<<coreSubjects[i].name;
                 std::vector<int> weights;
@@ -646,7 +649,7 @@ void section::makeTIMETABLE(){
                     for(int k=0;k<periods;k++){
                         if(!coreTeachers[i].timeTable[j][k]){
                             if(timeTable[j][k]=="f"){
-                                for(int a=0;a<coreSubjects[i].credits;a++){
+                                for(int a=0;a<weights.size();a++){
                                     if(weight(dayfactor[j],k,coreSubjects[i].bFactor)==weights[a] && numberclasses){
                                         numberclasses--;
                                         dayfactor[j]+=coreSubjects[i].bFactor*5;
