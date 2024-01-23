@@ -548,7 +548,7 @@ void section::makeTIMETABLE(){
                     for(int k=0;k<periods;k+=2){
                         if(!returnTeacher(coreTeachers[i].name).timeTable[j][k] && !returnTeacher(coreTeachers[i].name).timeTable[j][k+1]){
                             if(timeTable[j][k]=="f"){
-                                for(int a=0;a<coreSubjects[i].credits;a++){
+                                for(int a=0;a<weights.size();a++){
                                     if(weight(dayfactor[j],k,coreSubjects[i].bFactor)==weights[a] && numberclasses){
                                         numberclasses--;
                                         dayfactor[j]+=coreSubjects[i].bFactor*5;
