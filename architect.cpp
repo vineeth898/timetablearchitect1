@@ -122,7 +122,6 @@ void section::displayClassTable(){
 }
 
 void section::addCore(teacher Teacher,subject Subject){
-    allTeachers.push_back(Teacher);
     coreTeachers.push_back(Teacher);
     coreSubjects.push_back(Subject);
 }
@@ -132,14 +131,7 @@ void section::addLab(teacher Teacher[],int noteachers,subject Subject,int noLabs
     for(int i=0;i<noteachers;i++){
         bool flag=1;
         a.push_back(Teacher[i]);
-        for(int j=0;j<allTeachers.size();j++){
-            if(allTeachers[j].name==Teacher[i].name){
-                flag=0;
-            }
-        }
-        if(flag){
-            allTeachers.push_back(Teacher[i]);
-        }
+       
     }   
     labTeachers.push_back(a);
     labSubjects.push_back(Subject);
