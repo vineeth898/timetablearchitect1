@@ -146,7 +146,7 @@ void section::storeTimeTable(){
     std::fstream storage;
     std::string bob="storage/"+std::to_string(name)+".csv";
     storage.open(bob,std::ios::app);
-    storage<<"NEW TIME TABLE:   \n";
+    storage<<"TIME TABLE:   \n";
     if(storage.is_open()){
         for(int i=0;i<days;i++){
             bob="";
@@ -154,6 +154,24 @@ void section::storeTimeTable(){
                 bob+=timeTable[i][j]+",";
             }
             bob+=timeTable[i][periods-1]+"\n";
+            storage<<bob;
+        }
+        storage<<"\nTEACHER TABLE:\n";
+        for(int i=0;i<days;i++){
+            bob="";
+            for(int j=0;j<periods-1;j++){
+                bob+=teacherTable[i][j]+",";
+            }
+            bob+=teacherTable[i][periods-1]+"\n";
+            storage<<bob;
+        }
+        storage<<"\nROOM TABLE:\n";
+        for(int i=0;i<days;i++){
+            bob="";
+            for(int j=0;j<periods-1;j++){
+                bob+=roomTable[i][j]+",";
+            }
+            bob+=roomTable[i][periods-1]+"\n";
             storage<<bob;
         }
         storage.close();
