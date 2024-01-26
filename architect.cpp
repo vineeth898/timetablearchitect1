@@ -131,7 +131,6 @@ void section::addLab(teacher Teacher[],int noteachers,subject Subject,int noLabs
     for(int i=0;i<noteachers;i++){
         bool flag=1;
         a.push_back(Teacher[i]);
-       
     }   
     labTeachers.push_back(a);
     labSubjects.push_back(Subject);
@@ -336,76 +335,94 @@ void section::makeTIMETABLE(){
             }
             if(!collision){
                 //std::cout<<"\nno collision for: "<<coreSubjects[i].name;
-                std::vector<int> weights;
-                int numberclasses=coreSubjects[i].credits;
-                for(int j=0;j<days;j++){
-                    for(int k=0;k<periods;k++){
-                        if(!returnTeacher(coreTeachers[i].name).timeTable[j][k]){
-                            if(timeTable[j][k]=="f"){
-                                weights.push_back(weight(dayfactor[j],k,coreSubjects[i].bFactor));
+                int currentAssigned=0;
+                int count=0;
+                repeat:
+                count++;
+                if(count<37){
+                        std::vector<int> weights;
+                    int numberclasses=coreSubjects[i].credits-currentAssigned;
+                    for(int j=0;j<days;j++){
+                        int discouragementFactor=1;
+                        for(int k=0;k<periods;k++){
+                            if(timeTable[j][k]==coreSubjects[i].name){
+                                discouragementFactor=200;
+                            }
+                            if(!returnTeacher(coreTeachers[i].name).timeTable[j][k]){
+                                if(timeTable[j][k]=="f"){
+                                    weights.push_back(weight(dayfactor[j],k,coreSubjects[i].bFactor*discouragementFactor));
+                                }
                             }
                         }
                     }
-                }
-                std::list<int> weightsl;
-                for(int o=0;o<weights.size();o++){
-                    weightsl.push_back(weights[o]);
-                }
-                weightsl.sort();
-                std::list<int>::iterator ptr=weightsl.begin();
-                int j=0;
-                while(ptr != weightsl.end()){
-                    weights[j]=*ptr;
-                    ptr++;
-                    j++;
-                }
-                for(int j=0;j<days;j++){
-                    for(int k=0;k<periods;k++){
-                        if(!returnTeacher(coreTeachers[i].name).timeTable[j][k]){
-                            if(timeTable[j][k]=="f"){
-                                for(int a=0;a<weights.size();a++){
-                                    if(weight(dayfactor[j],k,coreSubjects[i].bFactor)==weights[a] && numberclasses){
-                                        numberclasses--;
-                                        dayfactor[j]+=coreSubjects[i].bFactor*5;
-                                        timeTable[j][k]=coreSubjects[i].name;
-                                        teacherTable[j][k]=coreTeachers[i].name;
-                                        returnTeacher(coreTeachers[i].name).timeTable[j][k]=1;
-                                        returnTeacher(coreTeachers[i].name).timeTableName[j][k]=name;
-                                        if(coreSubjects[i].rooms[0]=="0"){
-                                            if(!roomDefault.timeTable[j][k]){
-                                                roomDefault.timeTable[j][k]=1;
-                                                roomDefault.timeTableName[j][k]=name;
-                                                roomTable[j][k]=roomDefault.name;
+                    std::list<int> weightsl;
+                    for(int o=0;o<weights.size();o++){
+                        weightsl.push_back(weights[o]);
+                    }
+                    weightsl.sort();
+                    std::list<int>::iterator ptr=weightsl.begin();
+                    int j=0;
+                    while(ptr != weightsl.end()){
+                        weights[j]=*ptr;
+                        ptr++;
+                        j++;
+                    }
+                    for(int j=0;j<days;j++){
+                        int discouragementFactor=1;
+                        for(int k=0;k<periods;k++){
+                            if(timeTable[j][k]==coreSubjects[i].name){
+                                discouragementFactor=200;
+                            }
+                            if(!returnTeacher(coreTeachers[i].name).timeTable[j][k]){
+                                if(timeTable[j][k]=="f"){
+                                    for(int a=0;a<coreSubjects[i].credits-currentAssigned;a++){
+                                        if(weight(dayfactor[j],k,coreSubjects[i].bFactor*discouragementFactor)==weights[a] && numberclasses){
+                                            numberclasses--;
+                                            dayfactor[j]+=coreSubjects[i].bFactor*5;
+                                            timeTable[j][k]=coreSubjects[i].name;
+                                            teacherTable[j][k]=coreTeachers[i].name;
+                                            returnTeacher(coreTeachers[i].name).timeTable[j][k]=1;
+                                            returnTeacher(coreTeachers[i].name).timeTableName[j][k]=name;
+                                            if(coreSubjects[i].rooms[0]=="0"){
+                                                if(!roomDefault.timeTable[j][k]){
+                                                    roomDefault.timeTable[j][k]=1;
+                                                    roomDefault.timeTableName[j][k]=name;
+                                                    roomTable[j][k]=roomDefault.name;
+                                                }
+                                                else{
+                                                    for(int s=0;s<defRooms.size();s++){
+                                                        if(!defRooms[s].timeTable[j][k]){
+                                                            defRooms[s].timeTable[j][k]=1;
+                                                            defRooms[s].timeTableName[j][k]=name;
+                                                            roomTable[j][k]=defRooms[s].name;
+                                                            goto a;
+                                                        }
+                                                    }
+                                                    roomTable[j][k]="?????";
+                                                }
                                             }
                                             else{
-                                                for(int s=0;s<defRooms.size();s++){
-                                                    if(!defRooms[s].timeTable[j][k]){
-                                                        defRooms[s].timeTable[j][k]=1;
-                                                        defRooms[s].timeTableName[j][k]=name;
-                                                        roomTable[j][k]=defRooms[s].name;
+                                                for(int q=0;q<coreSubjects[i].noRooms;q++){
+                                                    room temp=returnRoom(coreSubjects[i].rooms[q]);
+                                                    if(!temp.timeTable[j][k]){
+                                                        temp.timeTableName[j][k]=name;
+                                                        temp.timeTable[j][k]=1;
+                                                        roomTable[j][k]=temp.name;
                                                         goto a;
                                                     }
                                                 }
-                                                roomTable[j][k]="?????";
                                             }
+                                            a:
+                                            break;
                                         }
-                                        else{
-                                            for(int q=0;q<coreSubjects[i].noRooms;q++){
-                                                room temp=returnRoom(coreSubjects[i].rooms[q]);
-                                                if(!temp.timeTable[j][k]){
-                                                    temp.timeTableName[j][k]=name;
-                                                    temp.timeTable[j][k]=1;
-                                                    roomTable[j][k]=temp.name;
-                                                    goto a;
-                                                }
-                                            }
-                                        }
-                                        a:
-                                        break;
                                     }
                                 }
                             }
                         }
+                    }
+                    if(numberclasses>0){
+                        currentAssigned=coreSubjects[i].credits-numberclasses;
+                        goto repeat;
                     }
                 }
             } 
@@ -520,88 +537,106 @@ void section::makeTIMETABLE(){
                 }
             }
             if(!collision){
-                std::vector<int> weights;
-                int numberclasses=coreSubjects[i].credits;
-                for(int j=0;j<days;j++){
-                    for(int k=0;k<periods;k+=2){
-                        if(!returnTeacher(coreTeachers[i].name).timeTable[j][k] && !returnTeacher(coreTeachers[i].name).timeTable[j][k+1]){
-                            if(timeTable[j][k]=="f"){
-                                weights.push_back(weight(dayfactor[j],k,coreSubjects[i].bFactor));
+                int classesAssigned=0;
+                int count=0;
+                repeat2:
+                count++;
+                if(count<37){
+                    std::vector<int> weights;
+                    int numberclasses=coreSubjects[i].credits-classesAssigned;
+                    for(int j=0;j<days;j++){
+                        int discouragementFactor=1;
+                        for(int k=0;k<periods;k+=2){
+                            if(timeTable[j][k]==coreSubjects[i].name){
+                                discouragementFactor=200;
+                            }
+                            if(!returnTeacher(coreTeachers[i].name).timeTable[j][k] && !returnTeacher(coreTeachers[i].name).timeTable[j][k+1]){
+                                if(timeTable[j][k]=="f"){
+                                    weights.push_back(weight(dayfactor[j],k,coreSubjects[i].bFactor*discouragementFactor));
+                                }
                             }
                         }
                     }
-                }
-                
-                std::list<int> weightsl;
-                for(int o=0;o<weights.size();o++){
-                    weightsl.push_back(weights[o]);
-                }
-                weightsl.sort();
-                std::list<int>::iterator ptr=weightsl.begin();
-                int j=0;
-                while(ptr != weightsl.end()){
-                    weights[j]=*ptr;
-                    ptr++;
-                    j++;
-                }
-                for(int j=0;j<days;j++){
-                    for(int k=0;k<periods;k+=2){
-                        if(!returnTeacher(coreTeachers[i].name).timeTable[j][k] && !returnTeacher(coreTeachers[i].name).timeTable[j][k+1]){
-                            if(timeTable[j][k]=="f"){
-                                for(int a=0;a<coreSubjects[i].credits;a++){
-                                    if(weight(dayfactor[j],k,coreSubjects[i].bFactor)==weights[a] && numberclasses){
-                                        numberclasses--;
-                                        dayfactor[j]+=coreSubjects[i].bFactor*5;
-                                        timeTable[j][k]=coreSubjects[i].name;
-                                        teacherTable[j][k]=returnTeacher(coreTeachers[i].name).name;
-                                        returnTeacher(coreTeachers[i].name).timeTable[j][k]=1;
-                                        returnTeacher(coreTeachers[i].name).timeTableName[j][k]=name;
-                                        timeTable[j][k+1]=coreSubjects[i].name;
-                                        teacherTable[j][k+1]=coreTeachers[i].name;
-                                        returnTeacher(coreTeachers[i].name).timeTable[j][k+1]=1;
-                                        returnTeacher(coreTeachers[i].name).timeTableName[j][k+1]=name;
-                                        break;
-                                        if(coreSubjects[i].rooms[0]=="0"){
-                                            if(!roomDefault.timeTable[j][k] && !roomDefault.timeTable[j][k+1]){
-                                                roomDefault.timeTable[j][k]=1;
-                                                roomDefault.timeTableName[j][k]=name;
-                                                roomTable[j][k]=roomDefault.name;
-                                                roomDefault.timeTable[j][k+1]=1;
-                                                roomDefault.timeTableName[j][k+1]=name;
-                                                roomTable[j][k+1]=roomDefault.name;
+                    
+                    std::list<int> weightsl;
+                    for(int o=0;o<weights.size();o++){
+                        weightsl.push_back(weights[o]);
+                    }
+                    weightsl.sort();
+                    std::list<int>::iterator ptr=weightsl.begin();
+                    int j=0;
+                    while(ptr != weightsl.end()){
+                        weights[j]=*ptr;
+                        ptr++;
+                        j++;
+                    }
+                    for(int j=0;j<days;j++){
+                        int discouragementFactor=1;
+                        for(int k=0;k<periods;k+=2){
+                            if(timeTable[j][k]==coreSubjects[i].name){
+                                discouragementFactor=200;
+                            }
+                            if(!returnTeacher(coreTeachers[i].name).timeTable[j][k] && !returnTeacher(coreTeachers[i].name).timeTable[j][k+1]){
+                                if(timeTable[j][k]=="f"){
+                                    for(int a=0;a<coreSubjects[i].credits-classesAssigned;a++){
+                                        if(weight(dayfactor[j],k,coreSubjects[i].bFactor*discouragementFactor)==weights[a] && numberclasses){
+                                            numberclasses--;
+                                            dayfactor[j]+=coreSubjects[i].bFactor*5;
+                                            timeTable[j][k]=coreSubjects[i].name;
+                                            teacherTable[j][k]=returnTeacher(coreTeachers[i].name).name;
+                                            returnTeacher(coreTeachers[i].name).timeTable[j][k]=1;
+                                            returnTeacher(coreTeachers[i].name).timeTableName[j][k]=name;
+                                            timeTable[j][k+1]=coreSubjects[i].name;
+                                            teacherTable[j][k+1]=coreTeachers[i].name;
+                                            returnTeacher(coreTeachers[i].name).timeTable[j][k+1]=1;
+                                            returnTeacher(coreTeachers[i].name).timeTableName[j][k+1]=name;
+                                            break;
+                                            if(coreSubjects[i].rooms[0]=="0"){
+                                                if(!roomDefault.timeTable[j][k] && !roomDefault.timeTable[j][k+1]){
+                                                    roomDefault.timeTable[j][k]=1;
+                                                    roomDefault.timeTableName[j][k]=name;
+                                                    roomTable[j][k]=roomDefault.name;
+                                                    roomDefault.timeTable[j][k+1]=1;
+                                                    roomDefault.timeTableName[j][k+1]=name;
+                                                    roomTable[j][k+1]=roomDefault.name;
+                                                }
+                                                else{
+                                                    for(int s=0;s<defRooms.size();s++){
+                                                        if(!defRooms[s].timeTable[j][k] && !defRooms[s].timeTable[j][k+1]){
+                                                            defRooms[s].timeTable[j][k]=1;
+                                                            defRooms[s].timeTableName[j][k]=name;
+                                                            roomTable[j][k]=defRooms[s].name;
+                                                            defRooms[s].timeTable[j][k+1]=1;
+                                                            defRooms[s].timeTableName[j][k+1]=name;
+                                                            roomTable[j][k+1]=defRooms[s].name;
+                                                            goto c;
+                                                        }
+                                                    }
+                                                    roomTable[j][k]="?????";
+                                                }
                                             }
                                             else{
-                                                for(int s=0;s<defRooms.size();s++){
-                                                    if(!defRooms[s].timeTable[j][k] && !defRooms[s].timeTable[j][k+1]){
-                                                        defRooms[s].timeTable[j][k]=1;
-                                                        defRooms[s].timeTableName[j][k]=name;
-                                                        roomTable[j][k]=defRooms[s].name;
-                                                        defRooms[s].timeTable[j][k+1]=1;
-                                                        defRooms[s].timeTableName[j][k+1]=name;
-                                                        roomTable[j][k+1]=defRooms[s].name;
+                                                for(int q=0;q<coreSubjects[i].noRooms;q++){
+                                                    room temp=returnRoom(coreSubjects[i].rooms[q]);
+                                                    if(!temp.timeTable[j][k]){
+                                                        temp.timeTableName[j][k]=name;
+                                                        temp.timeTable[j][k]=1;
+                                                        roomTable[j][k]=temp.name;
                                                         goto c;
                                                     }
                                                 }
-                                                roomTable[j][k]="?????";
                                             }
+                                            c:
+                                            break;
                                         }
-                                        else{
-                                            for(int q=0;q<coreSubjects[i].noRooms;q++){
-                                                room temp=returnRoom(coreSubjects[i].rooms[q]);
-                                                if(!temp.timeTable[j][k]){
-                                                    temp.timeTableName[j][k]=name;
-                                                    temp.timeTable[j][k]=1;
-                                                    roomTable[j][k]=temp.name;
-                                                    goto c;
-                                                }
-                                            }
-                                        }
-                                        c:
-                                        break;
                                     }
                                 }
                             }
                         }
+                    }
+                    if(numberclasses>0){
+                        classesAssigned=coreSubjects[i].credits-numberclasses;
+                        goto repeat2;
                     }
                 }
             } 
@@ -665,6 +700,17 @@ int main(){
         std::cout<<"room opening failsed";
     }
     bob.close();
+    bob.open("datastorage/room.csv");
+    if(bob.is_open()){
+        while(!bob.eof()){
+            room temp;
+            std::string inp;
+            bob>>inp;
+            temp.readData(inp);
+            cse.allRooms.push_back(temp);
+        }
+    }
+    bob.close();
     bob.open("datastorage/teacher.csv");
     teacher t1,t2,t3,t4,t5,t6,t7;
     if(bob.is_open()){
@@ -688,7 +734,19 @@ int main(){
     }
     teacher teachers[]={t1,t2,t3,t4,t5,t6};
     bob.close();
+    bob.open("datastorage/teacher.csv");
+    if(bob.is_open()){
+        while(!bob.eof()){
+            teacher temp;
+            std::string inp;
+            bob>>inp;
+            temp.readData(inp);
+            cse.allTeachers.push_back(temp);
+        }
+    }
+    bob.close();
     bob.open("datastorage/subject.csv");
+    cse.name=123123;
     if(bob.is_open()){
         bob>>inp;
         subject labone;
