@@ -1,0 +1,46 @@
+TIME TABLE:   
+CAEG,CAEG,f,f,f,f
+Maths,chemistry,f,f,f,f
+english,english,f,f,f,f
+Maths,chemistry,f,f,f,f
+chemistry,f,f,f,f,f
+chemistry,ic,f,f,f,f
+
+TEACHER TABLE:
+gangadhar,gangadhar,f,f,f,f
+Soumya_M,Divakara,f,f,f,f
+chitra,chitra,f,f,f,f
+Soumya_M,Divakara,f,f,f,f
+Divakara,f,f,f,f,f
+Divakara,john,f,f,f,f
+
+ROOM TABLE:
+NA,?????,NA,NA,NA,NA
+?????,?????,NA,NA,NA,NA
+NA,?????,NA,NA,NA,NA
+CS104,CS104,NA,NA,NA,NA
+CS104,NA,NA,NA,NA,NA
+CS104,CS104,NA,NA,NA,NA
+TIME TABLE:   
+CAEG,CAEG,Maths,f,f,f
+Maths,Maths,chemistry,f,f,f
+english,english,f,chemistry,f,f
+Maths,Maths,chemistry,f,f,f
+chemistry,Maths,ic,f,f,f
+Maths,Maths,f,f,f,f
+
+TEACHER TABLE:
+gangadhar,gangadhar,Soumya_M,f,f,f
+Soumya_M,Soumya_M,Divakara,f,f,f
+chitra,chitra,f,Divakara,f,f
+Soumya_M,Soumya_M,Divakara,f,f,f
+Divakara,Soumya_M,john,f,f,f
+Soumya_M,Soumya_M,f,f,f,f
+
+ROOM TABLE:
+NA,?????,?????,NA,NA,NA
+?????,?????,?????,NA,NA,NA
+NA,?????,NA,CS104,NA,NA
+CS104,CS104,CS104,NA,NA,NA
+CS104,CS104,CS104,NA,NA,NA
+CS104,CS104,NA,NA,NA,NA

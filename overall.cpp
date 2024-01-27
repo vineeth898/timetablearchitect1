@@ -486,7 +486,6 @@ void section::storeTimeTable(){
     
 }
 
-
 void section::makeTIMETABLE(){
     int creditsl;
     bool collision=true;

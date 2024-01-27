@@ -735,22 +735,25 @@ int main(){
         bob>>inp;
         t1.readData(inp);
         bob>>inp;
+        bob>>inp;
         t2.readData(inp);
         bob>>inp;
+        bob>>inp;
         t3.readData(inp);
+        bob>>inp;
+        bob>>inp;
+        bob>>inp;
+        bob>>inp;
+        bob>>inp;
         bob>>inp;
         t4.readData(inp);
         bob>>inp;
         t5.readData(inp);
-        bob>>inp;
-        t6.readData(inp);
-        bob>>inp;
-        t7.readData(inp);
     }
     else{
         std::cout<<"Teaccher opening failsed";
     }
-    teacher teachers[]={t1,t2,t3,t4,t5,t6};
+    teacher teachers[]={t1,t2,t3,t4,t5};
     bob.close();
     bob.open("datastorage/teacher.csv");
     if(bob.is_open()){
@@ -766,11 +769,7 @@ int main(){
     bob.open("datastorage/subject.csv");
     cse.name=123123;
     if(bob.is_open()){
-        bob>>inp;
-        subject labone;
-        labone.readData(inp);
-        cse.addLab(teachers,6,labone,2);
-        subject sub1,sub2,sub3,sub4;
+        subject sub1,sub2,sub3,sub4,sub5;
         bob>>inp;
         sub1.readData(inp);
         bob>>inp;
@@ -778,11 +777,19 @@ int main(){
         bob>>inp;
         sub3.readData(inp);
         bob>>inp;
+        sub5.readData(inp);
+        bob>>inp;
         sub4.readData(inp);
-        cse.addCore(t1,sub1);
-        cse.addCore(t2,sub2);
-        cse.addCore(t6,sub3);
-        cse.addCore(t7,sub4);
+        cse.addCore(t1,sub2);
+        cse.addCore(t2,sub1);
+        cse.addCore(t3,sub3);
+        cse.addCore(t4,sub4);
+        cse.addCore(t5,sub5);
+        std::cout<<"teacher: "<<t1.name<<" sub: "<<sub2.name<<std::endl;
+        std::cout<<"teacher: "<<t2.name<<" sub: "<<sub1.name<<std::endl;
+        std::cout<<"teacher: "<<t3.name<<" sub: "<<sub3.name<<std::endl;
+        std::cout<<"teacher: "<<t4.name<<" sub: "<<sub4.name<<std::endl;
+        std::cout<<"teacher: "<<t5.name<<" sub: "<<sub5.name<<std::endl;
         cse.makeTIMETABLE();
         std::cout<<"DISPLAYING TIME TABLE\n";
         cse.displayTimeTable();
