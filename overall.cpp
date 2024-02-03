@@ -305,16 +305,6 @@ void teacher::showTimeTable(){
     //     std::cout<<std::endl;
     // }
 }
-#include<string>
-#include<iostream>
-#include"configs.cpp"
-#include<vector>
-#include"teacher.cpp"
-#include"room.cpp"
-#include"subject.cpp"
-#include<fstream>
-#include<algorithm>
-#include<list>
 //#include<bits/stdc++.h>
 /*
 First step:

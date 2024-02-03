@@ -1,28 +1,28 @@
 #include<fstream>
 #include<iostream>
+#include<string>
 using namespace std;
-void duplicateCSV(const string filepath,const string originalfile) {
-		std::fstream outputFile;
-		outputFile.open(filepath);
-		if (!outputFile.is_open()) {
-			ofstream outFile;
-			outFile.open(filepath);
-			std::fstream inputFile;
-			inputFile.open(originalfile);
-			string inp;
-			if (inputFile.is_open())
-			{
-				while (!inputFile.eof()) {
-					inputFile >> inp;
-					outFile << inp <<endl;
-				}
-			}
-			inputFile.close();
+std::string returnLine(std::string name, std::string path){
+	fstream file(path);
+	for(int i=0;i<1000;i++){
+		std::string line;
+		if(file.eof()){
+			break;
 		}
-		outputFile.close();
+		file>>line;
+		int j;
+		for(j=0;j<name.size();j++){
+			if(name[j]!=line[j]){
+				goto a;
+			}
+		}
+		return line;
+		a:
+		continue;
+	}
+	file.close();
+	return "not found";
 }
 int main(){
-    fstream file;
-    duplicateCSV("bob.csv","datastorage/room.csv");
-	cout<<"bob";
+	cout<<returnLine("chemlab","datastorage/subject.csv");
 }

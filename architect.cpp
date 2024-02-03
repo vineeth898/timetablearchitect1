@@ -33,7 +33,7 @@ class section{
         std::vector<subject> labSubjects;
         std::vector<int> noOfLabs;
         void addLab(teacher Teacher[],int noteachers,subject Subject,int noLabs);
-
+    
         std::vector<room> allRooms;
         std::vector<std::string> defaultRooms;
         std::string timeTable[days][periods];
@@ -57,7 +57,6 @@ class section{
             }
         }
         int dayfactor[days]={0};
-    private:
         bool error_=false;
         int weight(int &dayfactor,int time,int bfactor){
             return (time*10+bfactor*5+dayfactor);
@@ -84,9 +83,14 @@ class section{
         }
         subject &returnSubject(std::string inp){
             error_=false;
-            for(int i=0;i<coreTeachers.size();i++){
+            for(int i=0;i<coreSubjects.size();i++){
                 if(coreSubjects[i].name==inp){
                     return coreSubjects[i];
+                }
+            }
+            for(int i=0;i<labSubjects.size();i++){
+                if(labSubjects[i].name==inp){
+                    return labSubjects[i];
                 }
             }
             error_=true;
@@ -178,7 +182,7 @@ void section::storeTimeTable(){
     }
     
 }
-
+using namespace std;
 void section::makeTIMETABLE(){
     int creditsl;
     bool collision=true;
@@ -193,6 +197,7 @@ void section::makeTIMETABLE(){
                 intersections=0;
                 room curRoomA=returnRoom(labSubjects[i].rooms[j]);
                 room curRoomB=returnRoom(labSubjects[i].rooms[k]);
+                cout<<"\n current intersecctions finding in"<<curRoomA.name <<" and "<<curRoomB.name;
                 for(int a=0;a<days;a++){
                     for(int b=0;b<periods;b+=2){
                         if(!curRoomA.timeTable[a][b] && !curRoomA.timeTable[a][b+1] && !curRoomB.timeTable[a][b] && !curRoomB.timeTable[a][b+1] && timeTable[a][b]=="f" && timeTable[a][b+1]=="f"){
@@ -201,12 +206,14 @@ void section::makeTIMETABLE(){
                     }
                 }
                 if(intersections>=labSubjects[i].credits){
+                    cout<<" is a probable candidate";
                     std::vector<room> selection={curRoomA,curRoomB};
                     candidates.push_back(selection);
                     intersectionCount.push_back(intersections);
                 }
             }
         }
+        std::cout<<"found room intersections\n";
         int highest=0,highestindex=0;
         for(int j=0;j<candidates.size();j++){
             if(intersectionCount[j]>highest){
@@ -214,14 +221,22 @@ void section::makeTIMETABLE(){
                 highest=intersectionCount[j];
             }
         }
-        room curRoomA=candidates[highestindex][0];
-        room curRoomB=candidates[highestindex][1];
+        room curRoomA=candidates[0][0];
+        room curRoomB=candidates[0][1];
+        std::cout<<"anem candidate 1:"<< curRoomA.name;
+        std::cout<<"name candidate 2:"<<curRoomB.name;
         bool intersectionTimes[days][periods]={};
         for(int a=0;a<days;a++){
             for(int b=0;b<periods;b+=2){
-                intersectionTimes[a][b]=!curRoomA.timeTable[a][b] && !curRoomA.timeTable[a][b+1] && !curRoomB.timeTable[a][b] && !curRoomB.timeTable[a][b+1];
-                intersectionTimes[a][b+1]=!curRoomA.timeTable[a][b] && !curRoomA.timeTable[a][b+1] && !curRoomB.timeTable[a][b] && !curRoomB.timeTable[a][b+1];
+                intersectionTimes[a][b]=!curRoomA.timeTable[a][b] && !curRoomA.timeTable[a][b+1] && !curRoomB.timeTable[a][b] && !curRoomB.timeTable[a][b+1] && (timeTable[a][b]=="f")?1:0 &&(timeTable[a][b+1]=="f")?1:0;
+                intersectionTimes[a][b+1]=intersectionTimes[a][b];
             }
+        }
+        for(int s=0;s<days;s++){
+            for(int g=0;g<periods;g++){
+                std::cout<<intersectionTimes[s][g]<<" , ";
+            }
+            std::cout<<"\n";
         }
         int creditsForLab;
         std::vector<teacher> teacherListForLab=labTeachers[i];
@@ -229,32 +244,36 @@ void section::makeTIMETABLE(){
         std::vector<teacher> selectedTeachers;
         int lowest=36;
         int intersectionTable[days][periods]={0};
-        for (int a = 0; a < teacherListForLab.size() - 3; ++a) {
-            for (int j = a + 1; j < teacherListForLab.size() - 2; ++j) {
-                for (int m = j + 1; m < teacherListForLab.size() - 1; ++m) {
-                    for (int n = m + 1; n < teacherListForLab.size(); ++n) {
-                        creditsForLab=labSubjects[i].credits;
-                        int tempTable[days][periods]={0};
-                        for(int k=0;k<days;k++){
-                            for(int l=0;l<periods;l++){
-                                if(intersectionTimes[k][l]){
-                                    if(!returnTeacher(teacherListForLab[a].name).timeTable[k][l] && !returnTeacher(teacherListForLab[a].name).timeTable[k][l+1] && !returnTeacher(teacherListForLab[j].name).timeTable[k][l] && !returnTeacher(teacherListForLab[j].name).timeTable[k][l+1] && !returnTeacher(teacherListForLab[m].name).timeTable[k][l] && !returnTeacher(teacherListForLab[m].name).timeTable[k][l+1]&& !returnTeacher(teacherListForLab[n].name).timeTable[k][l] && !returnTeacher(teacherListForLab[n].name).timeTable[k][l+1]){
-                                        tempTable[k][l]=1;
-                                        tempTable[k][l+1]=1;
-                                        creditsForLab--;
+        std::cout<<labTeachers[i].size();
+        if(teacherListForLab.size()>2){
+            for (int a = 0; a < teacherListForLab.size() - 3; ++a) {
+                for (int j = a + 1; j < teacherListForLab.size() - 2; ++j) {
+                    for (int m = j + 1; m < teacherListForLab.size() - 1; ++m) {
+                        for (int n = m + 1; n < teacherListForLab.size(); ++n) {
+                            creditsForLab=labSubjects[i].credits;
+                            int tempTable[days][periods]={0};
+                            for(int k=0;k<days;k++){
+                                for(int l=0;l<periods;l++){
+                                    if(intersectionTimes[k][l]){
+                                        if(!returnTeacher(teacherListForLab[a].name).timeTable[k][l] && !returnTeacher(teacherListForLab[a].name).timeTable[k][l+1] && !returnTeacher(teacherListForLab[j].name).timeTable[k][l] && !returnTeacher(teacherListForLab[j].name).timeTable[k][l+1] && !returnTeacher(teacherListForLab[m].name).timeTable[k][l] && !returnTeacher(teacherListForLab[m].name).timeTable[k][l+1]&& !returnTeacher(teacherListForLab[n].name).timeTable[k][l] && !returnTeacher(teacherListForLab[n].name).timeTable[k][l+1]){
+                                            tempTable[k][l]=1;
+                                            tempTable[k][l+1]=1;
+                                            std::cout<<"intersection!";
+                                            creditsForLab--;
+                                        }
                                     }
                                 }
                             }
-                        }
-                        if(creditsForLab<=0){
-                            std::vector<teacher> temp={returnTeacher(teacherListForLab[a].name),returnTeacher(teacherListForLab[j].name),returnTeacher(teacherListForLab[m].name),returnTeacher(teacherListForLab[n].name)};
-                            comb.push_back(temp);
-                            if(lowest>labSubjects[i].credits-creditsForLab){
-                                lowest=labSubjects[i].credits-creditsForLab;
-                                selectedTeachers=temp;
-                                for(int k=0;k<days;k++){
-                                    for(int l=0;l<periods;l++){
-                                        intersectionTable[k][l]=tempTable[k][l];
+                            if(creditsForLab<=0){
+                                std::vector<teacher> temp={returnTeacher(teacherListForLab[a].name),returnTeacher(teacherListForLab[j].name),returnTeacher(teacherListForLab[m].name),returnTeacher(teacherListForLab[n].name)};
+                                comb.push_back(temp);
+                                if(lowest>labSubjects[i].credits-creditsForLab){
+                                    lowest=labSubjects[i].credits-creditsForLab;
+                                    selectedTeachers=temp;
+                                    for(int k=0;k<days;k++){
+                                        for(int l=0;l<periods;l++){
+                                            intersectionTable[k][l]=tempTable[k][l];
+                                        }
                                     }
                                 }
                             }
@@ -263,6 +282,7 @@ void section::makeTIMETABLE(){
                 }
             }
         }
+        
         creditsForLab=labSubjects[i].credits;
         for(int k=0;k<days;k++){
             for(int l=0;l<periods;l++){
@@ -274,12 +294,19 @@ void section::makeTIMETABLE(){
         }
         if(creditsForLab<=0)
             collision=false;
+
         creditsForLab=labSubjects[i].credits;
         //make collisiosn handelling
         //update teacher timetable
+        for(int s=0;s<days;s++){
+            for(int g=0;g<periods;g++){
+                std::cout<<intersectionTable[s][g]<<" , ";
+            }
+            std::cout<<"\n";
+        }
         if(!collision){
             for(int k=0;k<days;k++){
-                for(int l=0;l<periods;l++){
+                for(int l=0;l<periods;l+=2){
                     if(intersectionTable[k][l] && creditsForLab){
                         dayfactor[k]+=labSubjects[i].bFactor*5;
                         timeTable[k][l]=labSubjects[i].name;
@@ -311,8 +338,40 @@ void section::makeTIMETABLE(){
                 }
             }
         }
+        
         else{
-            //std::cout<<"bob";
+            std::cout<<"here";
+            for(int k=0;k<days;k++){
+                for(int l=0;l<periods;l++){
+                    if(intersectionTable[k][l] ){
+                        dayfactor[k]+=labSubjects[i].bFactor*5;
+                        timeTable[k][l]=labSubjects[i].name;
+                        timeTable[k][l+1]=labSubjects[i].name;
+                        teacherTable[k][l]=selectedTeachers[0].name+" , "+selectedTeachers[1].name+" , "+selectedTeachers[2].name+" , "+selectedTeachers[3].name;
+                        teacherTable[k][l+1]=selectedTeachers[0].name+" , "+selectedTeachers[1].name+" , "+selectedTeachers[2].name+" , "+selectedTeachers[3].name;
+                        roomTable[k][l]=candidates[highestindex][0].name+" , "+candidates[highestindex][1].name;
+                        roomTable[k][l+1]=candidates[highestindex][0].name+" , "+candidates[highestindex][1].name;
+                        room &tempUpdate=returnRoom(candidates[highestindex][0].name);
+                        tempUpdate.timeTable[k][l]=1;
+                        tempUpdate.timeTable[k][l+1]=1;
+                        tempUpdate.timeTableName[k][l]=name;
+                        tempUpdate.timeTableName[k][l+1]=name;
+                        room &tempUpdateA=returnRoom(candidates[highestindex][1].name);
+                        tempUpdateA.timeTable[k][l]=1;
+                        tempUpdateA.timeTable[k][l+1]=1;
+                        tempUpdateA.timeTableName[k][l]=name;
+                        tempUpdateA.timeTableName[k][l+1]=name;
+                        for(int p=0;p<4;p++){
+                            returnTeacher(selectedTeachers[p].name).timeTable[k][l]=1;
+                            returnTeacher(selectedTeachers[p].name).timeTable[k][l+1]=1;
+                            returnTeacher(selectedTeachers[p].name).timeTableName[k][l]=1;
+                            returnTeacher(selectedTeachers[p].name).timeTableName[k][l+1]=1;
+                            
+                        }
+                        break;
+                    }
+                }
+            }
         }
     }
     //core subjects allocation
@@ -685,118 +744,50 @@ std::vector<std::vector<bool>> intersectElectives(std::vector<teacher> teacherLi
     } 
     return returnVal;
 }
-
+using namespace std;
 int main(){
-    std::fstream bob;
-    bob.open("datastorage/room.csv");
-    std::string inp;
-    section cse;
-    if(bob.is_open()){
-        bob>>inp;
-        room c1,c2,c3,c4,c5;
-        c1.readData(inp);
-        bob>>inp;
-        c2.readData(inp);
-        bob>>inp;
-        c3.readData(inp);
-        bob>>inp;
-        c4.readData(inp);
-        bob>>inp;
-        bob>>inp;
-        c5.readData(inp);
-        cse.allRooms.push_back(c1);
-        cse.allRooms.push_back(c2);
-        cse.allRooms.push_back(c3);
-        cse.allRooms.push_back(c4);
-        cse.allRooms.push_back(c5);
-        cse.defaultRooms.push_back(c1.name);
-        cse.defaultRooms.push_back(c2.name);
-        cse.defaultRooms.push_back(c3.name);
-        cse.defaultRooms.push_back(c4.name);
-    }
-    else{
-        std::cout<<"room opening failsed";
-    }
-    bob.close();
-    bob.open("datastorage/room.csv");
-    if(bob.is_open()){
-        while(!bob.eof()){
-            room temp;
-            std::string inp;
-            bob>>inp;
-            temp.readData(inp);
-            cse.allRooms.push_back(temp);
+    fstream fileio;
+    fileio.open("datastorage/room.csv");
+    section t;
+    for(int i=0;i<1000;i++){
+        if(fileio.eof()){
+            break;
         }
+        string inp;
+        fileio>>inp;
+        room r;
+        r.readData(inp);
+        t.allRooms.push_back(r);
+        cout<<"pushedroom";
     }
-    bob.close();
-    bob.open("datastorage/teacher.csv");
-    teacher t1,t2,t3,t4,t5,t6,t7;
-    if(bob.is_open()){
-        bob>>inp;
-        t1.readData(inp);
-        bob>>inp;
-        bob>>inp;
-        t2.readData(inp);
-        bob>>inp;
-        bob>>inp;
-        t3.readData(inp);
-        bob>>inp;
-        bob>>inp;
-        bob>>inp;
-        bob>>inp;
-        bob>>inp;
-        bob>>inp;
-        t4.readData(inp);
-        bob>>inp;
-        t5.readData(inp);
-    }
-    else{
-        std::cout<<"Teaccher opening failsed";
-    }
-    teacher teachers[]={t1,t2,t3,t4,t5};
-    bob.close();
-    bob.open("datastorage/teacher.csv");
-    if(bob.is_open()){
-        while(!bob.eof()){
-            teacher temp;
-            std::string inp;
-            bob>>inp;
-            temp.readData(inp);
-            cse.allTeachers.push_back(temp);
+    fileio.close();
+    cout<<"bob"<<t.allRooms[3].name<<"bob";
+    fileio.open("datastorage/teacher.csv");
+    for(int i=0;i<1000;i++){
+        if(fileio.eof()){
+            break;
         }
+        string inp;
+        fileio>>inp;
+        teacher r;
+        r.readData(inp);
+        t.allTeachers.push_back(r);
     }
-    bob.close();
-    bob.open("datastorage/subject.csv");
-    cse.name=123123;
-    if(bob.is_open()){
-        subject sub1,sub2,sub3,sub4,sub5;
-        bob>>inp;
-        sub1.readData(inp);
-        bob>>inp;
-        sub2.readData(inp);
-        bob>>inp;
-        sub3.readData(inp);
-        bob>>inp;
-        sub5.readData(inp);
-        bob>>inp;
-        sub4.readData(inp);
-        cse.addCore(t1,sub2);
-        cse.addCore(t2,sub1);
-        cse.addCore(t3,sub3);
-        cse.addCore(t4,sub4);
-        cse.addCore(t5,sub5);
-        std::cout<<"teacher: "<<t1.name<<" sub: "<<sub2.name<<std::endl;
-        std::cout<<"teacher: "<<t2.name<<" sub: "<<sub1.name<<std::endl;
-        std::cout<<"teacher: "<<t3.name<<" sub: "<<sub3.name<<std::endl;
-        std::cout<<"teacher: "<<t4.name<<" sub: "<<sub4.name<<std::endl;
-        std::cout<<"teacher: "<<t5.name<<" sub: "<<sub5.name<<std::endl;
-        cse.makeTIMETABLE();
-        std::cout<<"DISPLAYING TIME TABLE\n";
-        cse.displayTimeTable();
-        std::cout<<"DISPLAYING CLASS TABLE\n";
-        cse.displayClassTable();
-        std::cout<<"DISPLAYING TEACHER TABLE\n";
-        cse.displayTeacherTable();
-        cse.storeTimeTable();
-    }
+    fileio.close();
+    fileio.open("datastorage/subject.csv");
+    string inp;
+    fileio>>inp;
+    subject sub;
+    sub.readData(inp);
+    teacher temp[10];
+     temp[0]=t.allTeachers[0];
+     temp[1]=t.allTeachers[1];
+     temp[2]=t.allTeachers[2];
+     temp[3]=t.allTeachers[3];
+     temp[4]=t.allTeachers[4];
+    t.addLab(temp,5,sub,2);
+    t.makeTIMETABLE();
+    t.displayTimeTable();
+    t.displayTeacherTable();
+    t.displayClassTable();
 } 
